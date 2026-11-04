@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Transport hub | Locate U{% endblock %}
+{% block content %}
+<section class="page-shell listing-page">
+  <div class="listing-intro">
+    <span class="eyebrow">MOVE EASILY</span>
+    <h1>Transport hub.</h1>
+    <p>Find airport, transit, and local commuter touchpoints with direct links to route planning and ride-hailing access.</p>
+  </div>
+  <div class="listing-controls">
+    <label>City
+      <input type="text" id="transport-city" value="{{ city }}" aria-label="City or destination">
+    </label>
+    <label>Sort
+      <select id="transport-sort">
+        <option value="rating" {% if selected_sort == 'rating' %}selected{% endif %}>Best rating</option>
+        <option value="recommended" {% if selected_sort == 'recommended' %}selected{% endif %}>Popular</option>
+        <option value="nearest" {% if selected_sort == 'nearest' %}selected{% endif %}>Nearest</option>
+      </select>
+    </label>
+    <button type="button" class="button button-accent" id="transport-search">Search transit</button>
+  </div>
+  <div class="destination-grid" id="transport-grid">
+    {% for place in places %}
+    <article class="destination-card">
+      <a class="place-visual visual-{{ loop.index % 5 }}" href="{{ url_for('discovery.place_details', place_id=place.id) }}">
+        <span class="visual-tag">{{ place.category|replace('_',' ')|title }}</span>
+        <span class="visual-glyph" aria-hidden="true">⇄</span>
+      </a>
+      <div class="destination-content">
+        <div class="destination-title">
+          <h2><a href="{{ url_for('discovery.place_details', place_id=place.id) }}">{{ place.name }}</a></h2>
+          <span class="rating">{% if place.rating %}★ {{ '%.1f'|format(place.rating) }}{% else %}New{% endif %}</span>
+        </div>
+        <p>{{ place.description }}</p>
+        <div class="destination-meta">
+          <span>{{ place.address }}</span>
+          <button class="save-place" type="button" data-favorite-id="{{ place.id }}" aria-label="Save {{ place.name }}" title="Save to favorites">♡</button>
+        </div>
+      </div>
+    </article>
+    {% else %}
+    <p class="empty-state">No transport hubs match this destination yet.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

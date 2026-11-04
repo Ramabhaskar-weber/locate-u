@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Your profile | Locate U{% endblock %}
+{% block content %}
+<section class="page-shell profile-page">
+	<div class="profile-heading">
+		<span class="profile-avatar">{{ current_user.username[0]|upper }}</span>
+		<div><span class="eyebrow">YOUR LOCATE U</span><h1>{{ current_user.username }}<span class="muted">’s map</span></h1><p>{{ current_user.email }}</p></div>
+	</div>
+	<section class="profile-edit">
+		<div><span class="eyebrow">ACCOUNT DETAILS</span><h2>Profile & preferences</h2></div>
+		<form method="post" class="preference-form">
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+			<label for="username">Username</label><input id="username" name="username" value="{{ current_user.username }}" minlength="3" maxlength="30" required>
+			<fieldset class="preference-options"><legend>Recommend places in these categories</legend>
+				{% for category in ['temple', 'nature', 'beach', 'hill_station', 'historical', 'caves', 'hotel', 'restaurant', 'transport'] %}
+				<label><input type="checkbox" name="categories" value="{{ category }}" {% if category in preferred_categories %}checked{% endif %}> {{ category|replace('_', ' ')|title }}</label>
+				{% endfor %}
+			</fieldset>
+			<button class="button button-dark" type="submit">Save profile</button>
+		</form>
+	</section>
+	<section class="profile-section">
+		<div class="section-heading section-heading-row"><div><span class="eyebrow">KEEP CLOSE</span><h2>Saved places <span class="count">{{ favorites|length }}</span></h2></div><a class="text-action" href="{{ url_for('discovery.destinations') }}">Discover more ↗</a></div>
+		<div class="saved-list">
+			{% for place in favorites %}<article class="saved-row"><span class="saved-dot">✳</span><div><h3><a href="{{ url_for('discovery.place_details', place_id=place.id) }}">{{ place.name }}</a></h3><p>{{ place.address }}</p></div><button class="icon-button remove-favorite" type="button" data-favorite-id="{{ place.id }}" aria-label="Remove {{ place.name }} from favorites">×</button></article>
+			{% else %}<p class="muted">Your saved places will appear here.</p>{% endfor %}
+		</div>
+	</section>
+	<section class="profile-section">
+		<div class="section-heading section-heading-row"><div><span class="eyebrow">ON THE HORIZON</span><h2>Your itineraries <span class="count">{{ itineraries|length }}</span></h2></div><a class="text-action" href="{{ url_for('planning.itinerary_page') }}">Open planner ↗</a></div>
+		{% for itinerary in itineraries %}<div class="saved-row"><span class="saved-dot">{{ loop.index }}</span><div><h3>{{ itinerary.title }}</h3><p>{{ itinerary.destination or 'Destination not set' }}</p></div></div>
+		{% else %}<p class="muted">Your trip plans will appear here.</p>{% endfor %}
+	</section>
+	<section class="profile-section">
+		<div class="section-heading"><span class="eyebrow">RECENTLY EXPLORED</span><h2>Search history <span class="count">{{ search_history|length }}</span></h2></div>
+		{% for item in search_history %}<div class="saved-row"><span class="saved-dot">⌕</span><div><h3>{{ item.query }}</h3><p>{{ item.category or 'All categories' }} · {{ item.created_at }}</p></div></div>
+		{% else %}<p class="muted">Your recent searches will appear here. Precise location is not stored.</p>{% endfor %}
+	</section>
+</section>
+{% endblock %}

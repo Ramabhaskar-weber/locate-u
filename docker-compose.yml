@@ -1,0 +1,26 @@
+# docker compose up --build   → http://localhost:8000
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: locate_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-locally}
+      POSTGRES_DB: locate_u
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U locate_user -d locate_u"]
+      interval: 5s
+      retries: 10
+  app:
+    build: .
+    depends_on:
+      db: { condition: service_healthy }
+    ports: ["8000:8000"]
+    environment:
+      DATABASE_URL: postgresql+psycopg://locate_user:${POSTGRES_PASSWORD:-change-me-locally}@db:5432/locate_u
+      SECRET_KEY: ${SECRET_KEY:?set SECRET_KEY in your shell or .env (32+ random chars)}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8000}
+      NOMINATIM_EMAIL: ${NOMINATIM_EMAIL:-}
+      AUTO_SETUP: "true"
+volumes:
+  pgdata:

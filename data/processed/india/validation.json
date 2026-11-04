@@ -1,0 +1,514 @@
+{
+ "generated_at": "2026-11-04T10:23:04+00:00",
+ "ok": true,
+ "issues": [],
+ "states": 28,
+ "union_territories": 8,
+ "districts_total": 640,
+ "places_input": 11429,
+ "places_output": 7967,
+ "assignment": {
+  "point_in_polygon": 11384,
+  "snapped_to_nearest": 37,
+  "unassigned_dropped": 8,
+  "cross_source_merges": 3454
+ },
+ "csc_state_mismatches": 24,
+ "per_state": {
+  "AP": {
+   "districts": 13,
+   "places": 269
+  },
+  "AR": {
+   "districts": 16,
+   "places": 41
+  },
+  "AS": {
+   "districts": 27,
+   "places": 237
+  },
+  "BR": {
+   "districts": 38,
+   "places": 244
+  },
+  "CT": {
+   "districts": 18,
+   "places": 198
+  },
+  "GA": {
+   "districts": 2,
+   "places": 84
+  },
+  "GJ": {
+   "districts": 26,
+   "places": 498
+  },
+  "HR": {
+   "districts": 21,
+   "places": 163
+  },
+  "HP": {
+   "districts": 12,
+   "places": 72
+  },
+  "JH": {
+   "districts": 24,
+   "places": 250
+  },
+  "KA": {
+   "districts": 30,
+   "places": 407
+  },
+  "KL": {
+   "districts": 14,
+   "places": 536
+  },
+  "MP": {
+   "districts": 50,
+   "places": 501
+  },
+  "MH": {
+   "districts": 35,
+   "places": 807
+  },
+  "MN": {
+   "districts": 9,
+   "places": 51
+  },
+  "ML": {
+   "districts": 7,
+   "places": 25
+  },
+  "MZ": {
+   "districts": 8,
+   "places": 39
+  },
+  "NL": {
+   "districts": 11,
+   "places": 28
+  },
+  "OR": {
+   "districts": 30,
+   "places": 243
+  },
+  "PB": {
+   "districts": 20,
+   "places": 249
+  },
+  "RJ": {
+   "districts": 33,
+   "places": 335
+  },
+  "SK": {
+   "districts": 4,
+   "places": 12
+  },
+  "TN": {
+   "districts": 32,
+   "places": 1074
+  },
+  "TG": {
+   "districts": 10,
+   "places": 197
+  },
+  "TR": {
+   "districts": 4,
+   "places": 49
+  },
+  "UP": {
+   "districts": 71,
+   "places": 658
+  },
+  "UK": {
+   "districts": 13,
+   "places": 69
+  },
+  "WB": {
+   "districts": 19,
+   "places": 302
+  },
+  "AN": {
+   "districts": 3,
+   "places": 12
+  },
+  "CH": {
+   "districts": 1,
+   "places": 6
+  },
+  "DH": {
+   "districts": 3,
+   "places": 16
+  },
+  "DL": {
+   "districts": 9,
+   "places": 131
+  },
+  "JK": {
+   "districts": 20,
+   "places": 138
+  },
+  "LA": {
+   "districts": 2,
+   "places": 5
+  },
+  "LD": {
+   "districts": 1,
+   "places": 10
+  },
+  "PY": {
+   "districts": 4,
+   "places": 11
+  }
+ },
+ "excluded_polygons": [
+  {
+   "state_2011": "Jammu & Kashmir",
+   "district": "Data Not Available",
+   "reason": "Source marks polygon as 'Data Not Available'"
+  }
+ ],
+ "reorganisation_rules": [
+  {
+   "from": "AP:Adilabad",
+   "to": "TG"
+  },
+  {
+   "from": "AP:Hyderabad",
+   "to": "TG"
+  },
+  {
+   "from": "AP:Karimnagar",
+   "to": "TG"
+  },
+  {
+   "from": "AP:Khammam",
+   "to": "TG"
+  },
+  {
+   "from": "AP:Mahbubnagar",
+   "to": "TG"
+  },
+  {
+   "from": "AP:Medak",
+   "to": "TG"
+  },
+  {
+   "from": "AP:Nalgonda",
+   "to": "TG"
+  },
+  {
+   "from": "AP:Nizamabad",
+   "to": "TG"
+  },
+  {
+   "from": "AP:Rangareddy",
+   "to": "TG"
+  },
+  {
+   "from": "AP:Warangal",
+   "to": "TG"
+  },
+  {
+   "from": "JK:Leh (ladakh)",
+   "to": "LA"
+  },
+  {
+   "from": "JK:Kargil",
+   "to": "LA"
+  }
+ ],
+ "samples": {
+  "state_mismatch": [
+   {
+    "name": "Parlakimidi",
+    "csc_state": "AP",
+    "polygon_state": "OR",
+    "district": "Gajapati",
+    "sources": {
+     "csc": 133361
+    }
+   },
+   {
+    "name": "Yanam",
+    "csc_state": "AP",
+    "polygon_state": "PY",
+    "district": "Yanam",
+    "sources": {
+     "csc": 134424
+    }
+   },
+   {
+    "name": "Kotaparh",
+    "csc_state": "CT",
+    "polygon_state": "OR",
+    "district": "Koraput",
+    "sources": {
+     "csc": 132596
+    }
+   },
+   {
+    "name": "Dadra",
+    "csc_state": "DH",
+    "polygon_state": "GJ",
+    "district": "Valsad",
+    "sources": {
+     "csc": 131639
+    }
+   },
+   {
+    "name": "Dumkhal",
+    "csc_state": "GJ",
+    "polygon_state": "MH",
+    "district": "Nandurbar",
+    "sources": {
+     "csc": 147597
+    }
+   },
+   {
+    "name": "Nagwa",
+    "csc_state": "GJ",
+    "polygon_state": "UP",
+    "district": "Ballia",
+    "sources": {
+     "csc": 147637
+    }
+   },
+   {
+    "name": "Mahe",
+    "csc_state": "KL",
+    "polygon_state": "PY",
+    "district": "Mahe",
+    "sources": {
+     "csc": 132852
+    }
+   },
+   {
+    "name": "Chandgad",
+    "csc_state": "MH",
+    "polygon_state": "GA",
+    "district": "South Goa",
+    "sources": {
+     "csc": 147721
+    }
+   },
+   {
+    "name": "Daddi",
+    "csc_state": "MH",
+    "polygon_state": "KA",
+    "district": "Belgaum",
+    "sources": {
+     "csc": 147729
+    }
+   },
+   {
+    "name": "Katral",
+    "csc_state": "MH",
+    "polygon_state": "KA",
+    "district": "Bijapur",
+    "sources": {
+     "csc": 147786
+    }
+   },
+   {
+    "name": "Mastiholi",
+    "csc_state": "MH",
+    "polygon_state": "KA",
+    "district": "Belgaum",
+    "sources": {
+     "csc": 147818
+    }
+   },
+   {
+    "name": "Navapur",
+    "csc_state": "MH",
+    "polygon_state": "GJ",
+    "district": "Tapi",
+    "sources": {
+     "csc": 147844
+    }
+   },
+   {
+    "name": "Prakasha",
+    "csc_state": "MH",
+    "polygon_state": "GJ",
+    "district": "Tapi",
+    "sources": {
+     "csc": 147869
+    }
+   },
+   {
+    "name": "Bakloh",
+    "csc_state": "PB",
+    "polygon_state": "HP",
+    "district": "Chamba",
+    "sources": {
+     "csc": 57819
+    }
+   },
+   {
+    "name": "Jorethang",
+    "csc_state": "SK",
+    "polygon_state": "WB",
+    "district": "Darjiling",
+    "sources": {
+     "csc": 132293
+    }
+   },
+   {
+    "name": "Rangpo",
+    "csc_state": "SK",
+    "polygon_state": "WB",
+    "district": "Darjiling",
+    "sources": {
+     "csc": 133609
+    }
+   },
+   {
+    "name": "Pallipattu",
+    "csc_state": "TN",
+    "polygon_state": "AP",
+    "district": "Chittoor",
+    "sources": {
+     "csc": 133333
+    }
+   },
+   {
+    "name": "Chhitauni",
+    "csc_state": "UP",
+    "polygon_state": "BR",
+    "district": "Pashchim Champaran",
+    "sources": {
+     "csc": 147458
+    }
+   },
+   {
+    "name": "Indragarh",
+    "csc_state": "UP",
+    "polygon_state": "RJ",
+    "district": "Hanumangarh",
+    "sources": {
+     "csc": 147484
+    }
+   },
+   {
+    "name": "Kausani",
+    "csc_state": "UP",
+    "polygon_state": "UK",
+    "district": "Bageshwar",
+    "sources": {
+     "csc": 147497
+    }
+   },
+   {
+    "name": "Mukteshwar",
+    "csc_state": "UP",
+    "polygon_state": "UK",
+    "district": "Nainital",
+    "sources": {
+     "csc": 147520
+    }
+   },
+   {
+    "name": "Munsyari",
+    "csc_state": "UP",
+    "polygon_state": "UK",
+    "district": "Pithoragarh",
+    "sources": {
+     "csc": 147522
+    }
+   },
+   {
+    "name": "Nagla",
+    "csc_state": "UP",
+    "polygon_state": "UK",
+    "district": "Udham Singh Nagar",
+    "sources": {
+     "csc": 147525
+    }
+   },
+   {
+    "name": "Chittaranjan",
+    "csc_state": "WB",
+    "polygon_state": "JH",
+    "district": "Jamtara",
+    "sources": {
+     "csc": 141912
+    }
+   }
+  ],
+  "unassigned": [
+   {
+    "name": "Thang",
+    "lat": 34.9274,
+    "lon": 76.79336,
+    "sources": {
+     "geonames": 1163626
+    },
+    "distance_km": 8.7
+   },
+   {
+    "name": "Uri",
+    "lat": 34.086,
+    "lon": 74.032,
+    "sources": {
+     "geonames": 1253694
+    },
+    "distance_km": 13.9
+   },
+   {
+    "name": "Keran",
+    "lat": 34.65371,
+    "lon": 73.95308,
+    "sources": {
+     "geonames": 1267253
+    },
+    "distance_km": 8.8
+   },
+   {
+    "name": "Sarupathar",
+    "lat": 26.206,
+    "lon": 96.81,
+    "sources": {
+     "geonames": 7302858
+    },
+    "distance_km": 92.8
+   },
+   {
+    "name": "Nowangabra",
+    "lat": 34.36209,
+    "lon": 73.8453,
+    "sources": {
+     "geonames": 13353357
+    },
+    "distance_km": 9.2
+   },
+   {
+    "name": "Sarupathar",
+    "lat": 26.206,
+    "lon": 96.81,
+    "sources": {
+     "csc": 133809
+    },
+    "distance_km": 92.8
+   },
+   {
+    "name": "Thang",
+    "lat": 34.9274,
+    "lon": 76.79336,
+    "sources": {
+     "csc": 134139
+    },
+    "distance_km": 8.7
+   },
+   {
+    "name": "Uri",
+    "lat": 34.08064,
+    "lon": 74.05088,
+    "sources": {
+     "csc": 134293
+    },
+    "distance_km": 12.2
+   }
+  ]
+ }
+}

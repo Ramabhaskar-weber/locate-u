@@ -1,0 +1,722 @@
+[
+ {
+  "code": "AP",
+  "name": "Andhra Pradesh",
+  "type": "state",
+  "capital": "Amaravati",
+  "lat": 15.92409,
+  "lon": 80.18638,
+  "bbox": [
+   76.7608,
+   12.6223,
+   84.7686,
+   19.1656
+  ],
+  "district_count": 13,
+  "place_count": 269,
+  "source_ids": {
+   "csc": 4017,
+   "iso_3166_2": "IN-AP"
+  }
+ },
+ {
+  "code": "AR",
+  "name": "Arunachal Pradesh",
+  "type": "state",
+  "capital": "Itanagar",
+  "lat": 28.09377,
+  "lon": 94.59213,
+  "bbox": [
+   91.5495,
+   26.6494,
+   97.4153,
+   29.4614
+  ],
+  "district_count": 16,
+  "place_count": 41,
+  "source_ids": {
+   "csc": 4024,
+   "iso_3166_2": "IN-AR"
+  }
+ },
+ {
+  "code": "AS",
+  "name": "Assam",
+  "type": "state",
+  "capital": "Dispur",
+  "lat": 26.40738,
+  "lon": 93.25513,
+  "bbox": [
+   89.6997,
+   24.1327,
+   96.021,
+   27.972
+  ],
+  "district_count": 27,
+  "place_count": 237,
+  "source_ids": {
+   "csc": 4027,
+   "iso_3166_2": "IN-AS"
+  }
+ },
+ {
+  "code": "BR",
+  "name": "Bihar",
+  "type": "state",
+  "capital": "Patna",
+  "lat": 25.64408,
+  "lon": 85.90651,
+  "bbox": [
+   83.3243,
+   24.2631,
+   88.2983,
+   27.5213
+  ],
+  "district_count": 38,
+  "place_count": 244,
+  "source_ids": {
+   "csc": 4037,
+   "iso_3166_2": "IN-BR"
+  }
+ },
+ {
+  "code": "CT",
+  "name": "Chhattisgarh",
+  "type": "state",
+  "capital": "Raipur",
+  "lat": 21.66374,
+  "lon": 81.84064,
+  "bbox": [
+   80.2468,
+   17.7901,
+   84.3966,
+   24.106
+  ],
+  "district_count": 18,
+  "place_count": 198,
+  "source_ids": {
+   "csc": 4040,
+   "iso_3166_2": "IN-CT"
+  }
+ },
+ {
+  "code": "GA",
+  "name": "Goa",
+  "type": "state",
+  "capital": "Panaji",
+  "lat": 15.30045,
+  "lon": 74.08551,
+  "bbox": [
+   73.6757,
+   14.752,
+   74.3356,
+   15.7996
+  ],
+  "district_count": 2,
+  "place_count": 84,
+  "source_ids": {
+   "csc": 4009,
+   "iso_3166_2": "IN-GA"
+  }
+ },
+ {
+  "code": "GJ",
+  "name": "Gujarat",
+  "type": "state",
+  "capital": "Gandhinagar",
+  "lat": 22.38501,
+  "lon": 71.74526,
+  "bbox": [
+   68.1862,
+   20.1209,
+   74.4766,
+   24.7085
+  ],
+  "district_count": 26,
+  "place_count": 498,
+  "source_ids": {
+   "csc": 4030,
+   "iso_3166_2": "IN-GJ"
+  }
+ },
+ {
+  "code": "HR",
+  "name": "Haryana",
+  "type": "state",
+  "capital": "Chandigarh",
+  "lat": 29.0,
+  "lon": 76.0,
+  "bbox": [
+   74.4746,
+   27.6506,
+   77.6051,
+   30.9267
+  ],
+  "district_count": 21,
+  "place_count": 163,
+  "source_ids": {
+   "csc": 4007,
+   "iso_3166_2": "IN-HR"
+  }
+ },
+ {
+  "code": "HP",
+  "name": "Himachal Pradesh",
+  "type": "state",
+  "capital": "Shimla",
+  "lat": 31.92924,
+  "lon": 77.18285,
+  "bbox": [
+   75.5936,
+   30.3796,
+   79.0119,
+   33.2549
+  ],
+  "district_count": 12,
+  "place_count": 72,
+  "source_ids": {
+   "csc": 4020,
+   "iso_3166_2": "IN-HP"
+  }
+ },
+ {
+  "code": "JH",
+  "name": "Jharkhand",
+  "type": "state",
+  "capital": "Ranchi",
+  "lat": 23.45598,
+  "lon": 85.25573,
+  "bbox": [
+   83.3313,
+   21.9708,
+   87.9786,
+   25.3488
+  ],
+  "district_count": 24,
+  "place_count": 250,
+  "source_ids": {
+   "csc": 4025,
+   "iso_3166_2": "IN-JH"
+  }
+ },
+ {
+  "code": "KA",
+  "name": "Karnataka",
+  "type": "state",
+  "capital": "Bengaluru",
+  "lat": 14.52039,
+  "lon": 75.72235,
+  "bbox": [
+   74.051,
+   11.5824,
+   78.5883,
+   18.4767
+  ],
+  "district_count": 30,
+  "place_count": 407,
+  "source_ids": {
+   "csc": 4026,
+   "iso_3166_2": "IN-KA"
+  }
+ },
+ {
+  "code": "KL",
+  "name": "Kerala",
+  "type": "state",
+  "capital": "Thiruvananthapuram",
+  "lat": 10.35287,
+  "lon": 76.51204,
+  "bbox": [
+   74.863,
+   8.2914,
+   77.4127,
+   12.7951
+  ],
+  "district_count": 14,
+  "place_count": 536,
+  "source_ids": {
+   "csc": 4028,
+   "iso_3166_2": "IN-KL"
+  }
+ },
+ {
+  "code": "MP",
+  "name": "Madhya Pradesh",
+  "type": "state",
+  "capital": "Bhopal",
+  "lat": 23.81434,
+  "lon": 77.53407,
+  "bbox": [
+   74.0307,
+   21.0733,
+   82.8155,
+   26.8685
+  ],
+  "district_count": 50,
+  "place_count": 501,
+  "source_ids": {
+   "csc": 4039,
+   "iso_3166_2": "IN-MP"
+  }
+ },
+ {
+  "code": "MH",
+  "name": "Maharashtra",
+  "type": "state",
+  "capital": "Mumbai",
+  "lat": 18.90684,
+  "lon": 75.67416,
+  "bbox": [
+   72.6429,
+   15.6068,
+   80.8996,
+   22.029
+  ],
+  "district_count": 35,
+  "place_count": 807,
+  "source_ids": {
+   "csc": 4008,
+   "iso_3166_2": "IN-MH"
+  }
+ },
+ {
+  "code": "MN",
+  "name": "Manipur",
+  "type": "state",
+  "capital": "Imphal",
+  "lat": 24.72088,
+  "lon": 93.92294,
+  "bbox": [
+   92.9725,
+   23.8368,
+   94.7488,
+   25.6916
+  ],
+  "district_count": 9,
+  "place_count": 51,
+  "source_ids": {
+   "csc": 4010,
+   "iso_3166_2": "IN-MN"
+  }
+ },
+ {
+  "code": "ML",
+  "name": "Meghalaya",
+  "type": "state",
+  "capital": "Shillong",
+  "lat": 25.53794,
+  "lon": 91.29991,
+  "bbox": [
+   89.8168,
+   25.0295,
+   92.8047,
+   26.1175
+  ],
+  "district_count": 7,
+  "place_count": 25,
+  "source_ids": {
+   "csc": 4006,
+   "iso_3166_2": "IN-ML"
+  }
+ },
+ {
+  "code": "MZ",
+  "name": "Mizoram",
+  "type": "state",
+  "capital": "Aizawl",
+  "lat": 23.21462,
+  "lon": 92.86876,
+  "bbox": [
+   92.2589,
+   21.9442,
+   93.4426,
+   24.5182
+  ],
+  "district_count": 8,
+  "place_count": 39,
+  "source_ids": {
+   "csc": 4036,
+   "iso_3166_2": "IN-MZ"
+  }
+ },
+ {
+  "code": "NL",
+  "name": "Nagaland",
+  "type": "state",
+  "capital": "Kohima",
+  "lat": 26.16306,
+  "lon": 94.58849,
+  "bbox": [
+   93.3318,
+   25.1978,
+   95.2448,
+   27.0372
+  ],
+  "district_count": 11,
+  "place_count": 28,
+  "source_ids": {
+   "csc": 4018,
+   "iso_3166_2": "IN-NL"
+  }
+ },
+ {
+  "code": "OR",
+  "name": "Odisha",
+  "type": "state",
+  "capital": "Bhubaneswar",
+  "lat": 20.54312,
+  "lon": 84.68973,
+  "bbox": [
+   81.3915,
+   17.8105,
+   87.4902,
+   22.5669
+  ],
+  "district_count": 30,
+  "place_count": 243,
+  "source_ids": {
+   "csc": 4013,
+   "iso_3166_2": "IN-OR"
+  }
+ },
+ {
+  "code": "PB",
+  "name": "Punjab",
+  "type": "state",
+  "capital": "Chandigarh",
+  "lat": 30.92932,
+  "lon": 75.50048,
+  "bbox": [
+   73.8854,
+   29.5439,
+   76.9441,
+   32.576
+  ],
+  "district_count": 20,
+  "place_count": 249,
+  "source_ids": {
+   "csc": 4015,
+   "iso_3166_2": "IN-PB"
+  }
+ },
+ {
+  "code": "RJ",
+  "name": "Rajasthan",
+  "type": "state",
+  "capital": "Jaipur",
+  "lat": 26.81058,
+  "lon": 73.76845,
+  "bbox": [
+   69.4844,
+   23.0605,
+   78.2708,
+   30.1964
+  ],
+  "district_count": 33,
+  "place_count": 335,
+  "source_ids": {
+   "csc": 4014,
+   "iso_3166_2": "IN-RJ"
+  }
+ },
+ {
+  "code": "SK",
+  "name": "Sikkim",
+  "type": "state",
+  "capital": "Gangtok",
+  "lat": 27.60103,
+  "lon": 88.45414,
+  "bbox": [
+   88.0169,
+   27.0813,
+   88.9295,
+   28.1307
+  ],
+  "district_count": 4,
+  "place_count": 12,
+  "source_ids": {
+   "csc": 4034,
+   "iso_3166_2": "IN-SK"
+  }
+ },
+ {
+  "code": "TN",
+  "name": "Tamil Nadu",
+  "type": "state",
+  "capital": "Chennai",
+  "lat": 10.90943,
+  "lon": 78.36653,
+  "bbox": [
+   76.2331,
+   8.0778,
+   80.3463,
+   13.5632
+  ],
+  "district_count": 32,
+  "place_count": 1074,
+  "source_ids": {
+   "csc": 4035,
+   "iso_3166_2": "IN-TN"
+  }
+ },
+ {
+  "code": "TG",
+  "name": "Telangana",
+  "type": "state",
+  "capital": "Hyderabad",
+  "lat": 17.84959,
+  "lon": 79.11517,
+  "bbox": [
+   77.239,
+   15.8332,
+   81.803,
+   19.9165
+  ],
+  "district_count": 10,
+  "place_count": 197,
+  "source_ids": {
+   "csc": 4012,
+   "iso_3166_2": "IN-TG"
+  }
+ },
+ {
+  "code": "TR",
+  "name": "Tripura",
+  "type": "state",
+  "capital": "Agartala",
+  "lat": 23.77508,
+  "lon": 91.70251,
+  "bbox": [
+   91.1525,
+   22.9442,
+   92.3366,
+   24.5275
+  ],
+  "district_count": 4,
+  "place_count": 49,
+  "source_ids": {
+   "csc": 4038,
+   "iso_3166_2": "IN-TR"
+  }
+ },
+ {
+  "code": "UP",
+  "name": "Uttar Pradesh",
+  "type": "state",
+  "capital": "Lucknow",
+  "lat": 27.13033,
+  "lon": 80.85967,
+  "bbox": [
+   77.0962,
+   23.8719,
+   84.6389,
+   30.4076
+  ],
+  "district_count": 71,
+  "place_count": 658,
+  "source_ids": {
+   "csc": 4022,
+   "iso_3166_2": "IN-UP"
+  }
+ },
+ {
+  "code": "UK",
+  "name": "Uttarakhand",
+  "type": "state",
+  "capital": "Dehradun",
+  "lat": 30.04174,
+  "lon": 79.08969,
+  "bbox": [
+   77.5754,
+   28.7096,
+   81.043,
+   31.4672
+  ],
+  "district_count": 13,
+  "place_count": 69,
+  "source_ids": {
+   "csc": 4016,
+   "iso_3166_2": "IN-UK"
+  }
+ },
+ {
+  "code": "WB",
+  "name": "West Bengal",
+  "type": "state",
+  "capital": "Kolkata",
+  "lat": 22.99649,
+  "lon": 87.68559,
+  "bbox": [
+   85.8325,
+   21.5394,
+   89.8828,
+   27.2206
+  ],
+  "district_count": 19,
+  "place_count": 302,
+  "source_ids": {
+   "csc": 4853,
+   "iso_3166_2": "IN-WB"
+  }
+ },
+ {
+  "code": "AN",
+  "name": "Andaman and Nicobar Islands",
+  "type": "union_territory",
+  "capital": "Sri Vijaya Puram",
+  "lat": 12.61124,
+  "lon": 92.83165,
+  "bbox": [
+   92.2077,
+   6.756,
+   94.2758,
+   13.6758
+  ],
+  "district_count": 3,
+  "place_count": 12,
+  "source_ids": {
+   "csc": 4023,
+   "iso_3166_2": "IN-AN"
+  }
+ },
+ {
+  "code": "CH",
+  "name": "Chandigarh",
+  "type": "union_territory",
+  "capital": "Chandigarh",
+  "lat": 30.73331,
+  "lon": 76.77942,
+  "bbox": [
+   76.7038,
+   30.6655,
+   76.8495,
+   30.7953
+  ],
+  "district_count": 1,
+  "place_count": 6,
+  "source_ids": {
+   "csc": 4031,
+   "iso_3166_2": "IN-CH"
+  }
+ },
+ {
+  "code": "DH",
+  "name": "Dadra and Nagar Haveli and Daman and Diu",
+  "type": "union_territory",
+  "capital": "Daman",
+  "lat": 20.71817,
+  "lon": 70.93238,
+  "bbox": [
+   70.8732,
+   20.0519,
+   73.2195,
+   20.7722
+  ],
+  "district_count": 3,
+  "place_count": 16,
+  "source_ids": {
+   "csc": 4033,
+   "iso_3166_2": "IN-DH"
+  }
+ },
+ {
+  "code": "DL",
+  "name": "Delhi",
+  "type": "union_territory",
+  "capital": "New Delhi",
+  "lat": 28.6328,
+  "lon": 77.21977,
+  "bbox": [
+   76.8425,
+   28.4031,
+   77.3477,
+   28.8793
+  ],
+  "district_count": 9,
+  "place_count": 131,
+  "source_ids": {
+   "csc": 4021,
+   "iso_3166_2": "IN-DL"
+  }
+ },
+ {
+  "code": "JK",
+  "name": "Jammu and Kashmir",
+  "type": "union_territory",
+  "capital": "Srinagar (summer) / Jammu (winter)",
+  "lat": 33.66493,
+  "lon": 75.16296,
+  "bbox": [
+   73.8768,
+   32.2755,
+   76.796,
+   34.8691
+  ],
+  "district_count": 20,
+  "place_count": 138,
+  "source_ids": {
+   "csc": 4029,
+   "iso_3166_2": "IN-JK"
+  }
+ },
+ {
+  "code": "LA",
+  "name": "Ladakh",
+  "type": "union_territory",
+  "capital": "Leh",
+  "lat": 33.94564,
+  "lon": 77.65686,
+  "bbox": [
+   75.3582,
+   32.3378,
+   80.3286,
+   35.9953
+  ],
+  "district_count": 2,
+  "place_count": 5,
+  "source_ids": {
+   "csc": 4852,
+   "iso_3166_2": "IN-LA"
+  }
+ },
+ {
+  "code": "LD",
+  "name": "Lakshadweep",
+  "type": "union_territory",
+  "capital": "Kavaratti",
+  "lat": 10.33373,
+  "lon": 72.92054,
+  "bbox": [
+   71.7315,
+   8.2601,
+   74.1231,
+   12.4032
+  ],
+  "district_count": 1,
+  "place_count": 10,
+  "source_ids": {
+   "csc": 4019,
+   "iso_3166_2": "IN-LD"
+  }
+ },
+ {
+  "code": "PY",
+  "name": "Puducherry",
+  "type": "union_territory",
+  "capital": "Puducherry",
+  "lat": 11.93406,
+  "lon": 79.83064,
+  "bbox": [
+   75.5278,
+   10.8267,
+   82.3124,
+   16.7627
+  ],
+  "district_count": 4,
+  "place_count": 11,
+  "source_ids": {
+   "csc": 4011,
+   "iso_3166_2": "IN-PY"
+  }
+ }
+]

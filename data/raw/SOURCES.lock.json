@@ -1,0 +1,29 @@
+{
+  "dists11.geojson": {
+    "url": "https://raw.githubusercontent.com/datameet/maps/master/website/docs/data/geojson/dists11.geojson",
+    "name": "DataMeet India \u2014 Census 2011 district boundaries",
+    "license": "CC BY 4.0",
+    "homepage": "https://github.com/datameet/maps",
+    "retrieved_at": "2026-11-04T10:22:48+00:00",
+    "bytes": 27979803,
+    "sha256": "cafa345611b7d7a4d9923db57dba3d93afca4848c9e39f9b0be7f47a89dd78ad"
+  },
+  "csc_india.json": {
+    "url": "https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/json/countries%2Bstates%2Bcities.json",
+    "name": "countries-states-cities-database (India subset)",
+    "license": "ODbL 1.0",
+    "homepage": "https://github.com/dr5hn/countries-states-cities-database",
+    "retrieved_at": "2026-11-04T10:22:53+00:00",
+    "bytes": 609989,
+    "sha256": "3eb5ca1746b9ae8c8b51d29e219b65d63cb06f3bf77ff9749d0b17d1dd2b81ab"
+  },
+  "geonames_cities500.json": {
+    "url": "https://files.pythonhosted.org/packages/py3/g/geonamescache/geonamescache-3.0.2-py3-none-any.whl",
+    "name": "GeoNames cities500 (via geonamescache 3.0.2)",
+    "license": "CC BY 4.0 (GeoNames data); MIT (geonamescache package)",
+    "homepage": "https://www.geonames.org/",
+    "retrieved_at": "2026-11-04T10:23:00+00:00",
+    "bytes": 79527431,
+    "sha256": "1523be8c6f083eeee946e1c27a0916474d0f0de4361a15104fcc70218bc4d55e"
+  }
+}

@@ -1,0 +1,42 @@
+{
+ "dataset": "Locate U — India administrative & populated places",
+ "version": "2026-11-04",
+ "generated_at": "2026-11-04T10:23:04+00:00",
+ "coverage_note": "District boundaries follow Census 2011 (641 polygons, reconciled to today's 28 states and 8 UTs). Districts created after 2011 are NOT represented separately; their places appear under the 2011 parent district. Populated places are GeoNames settlements with population >= 500 plus CSC cities — this is NOT every village in India.",
+ "sources": [
+  {
+   "id": "datameet-dists11",
+   "name": "DataMeet India — Census 2011 districts",
+   "license": "CC BY 4.0",
+   "url": "https://github.com/datameet/maps",
+   "attribution": "India boundaries by DataMeet India community (CC BY 4.0)",
+   "retrieved_at": "2026-11-04T10:22:48+00:00",
+   "sha256": "cafa345611b7d7a4d9923db57dba3d93afca4848c9e39f9b0be7f47a89dd78ad"
+  },
+  {
+   "id": "geonames",
+   "name": "GeoNames cities500 (via geonamescache 3.0.2)",
+   "license": "CC BY 4.0",
+   "url": "https://www.geonames.org/",
+   "attribution": "GeoNames (geonames.org), CC BY 4.0",
+   "retrieved_at": "2026-11-04T10:23:00+00:00",
+   "sha256": "1523be8c6f083eeee946e1c27a0916474d0f0de4361a15104fcc70218bc4d55e",
+   "data_snapshot": "2020-02 (geonamescache 3.0.2 release)"
+  },
+  {
+   "id": "csc",
+   "name": "countries-states-cities-database (dr5hn)",
+   "license": "ODbL 1.0",
+   "url": "https://github.com/dr5hn/countries-states-cities-database",
+   "attribution": "© dr5hn/countries-states-cities-database contributors, ODbL 1.0",
+   "retrieved_at": "2026-11-04T10:22:53+00:00",
+   "sha256": "3eb5ca1746b9ae8c8b51d29e219b65d63cb06f3bf77ff9749d0b17d1dd2b81ab"
+  }
+ ],
+ "counts": {
+  "states": 28,
+  "union_territories": 8,
+  "districts": 640,
+  "places": 7967
+ }
+}

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="theme-color" content="#E5E5E5">
+  <title>{% block title %}Locate U | Explore Anywhere{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('discovery.index') }}" aria-label="Locate U home"><span class="brand-mark">L</span><span>LOCATE <b>U</b></span></a>
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="{{ url_for('discovery.destinations') }}">Discover</a>
+      <a href="{{ url_for('discovery.accommodations') }}">Stay</a>
+      <a href="{{ url_for('discovery.food') }}">Food</a>
+      <a href="{{ url_for('discovery.transport') }}">Transit</a>
+      {% if current_user.is_authenticated %}<a href="{{ url_for('planning.itinerary_page') }}">My trips</a><a href="{{ url_for('auth.profile') }}">Profile</a>{% endif %}
+      {% if current_user.is_authenticated and current_user.is_admin %}<a href="{{ url_for('admin.dashboard') }}">Admin</a>{% endif %}
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle theme"><span aria-hidden="true">◐</span></button>
+      {% if current_user.is_authenticated %}
+        <span class="nav-user">Hi, {{ current_user.username }}</span>
+        <form action="{{ url_for('auth.logout') }}" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="button button-quiet" type="submit">Sign out</button></form>
+      {% else %}<a class="button button-quiet" href="{{ url_for('auth.login') }}">Sign in</a><a class="button button-dark" href="{{ url_for('auth.register') }}">Create account</a>{% endif %}
+    </div>
+  </header>
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-stack" role="status">{% for category, message in messages %}<div class="flash flash-{{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="site-footer"><a class="brand brand-small" href="{{ url_for('discovery.index') }}"><span class="brand-mark">L</span><span>LOCATE <b>U</b></span></a><p>Explore Anywhere. Discover Everything. Travel Smarter.</p><span>Place details and hours can change. Confirm locally before you travel.</span></footer>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
