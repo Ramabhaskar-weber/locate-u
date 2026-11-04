@@ -1,4 +1,4 @@
-import { Compass, Home, Info, Map as MapIcon, Moon, Search, Settings, Star, Sun, SunMoon } from 'lucide-react';
+﻿import { Car, Compass, Home, Info, Map as MapIcon, Moon, Search, Settings, Star, Sun, SunMoon } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useHotkey } from '@/hooks';
@@ -14,6 +14,7 @@ const NAV = [
   { to: '/', label: 'Home', icon: Home, end: true },
   { to: '/map', label: 'World map', short: 'Map', icon: MapIcon },
   { to: '/india', label: 'India explorer', short: 'India', icon: Compass },
+  { to: '/transport', label: 'Transport Hub', short: 'Transport', icon: Car },
   { to: '/saved', label: 'Saved places', short: 'Saved', icon: Star },
   { to: '/settings', label: 'Settings', icon: Settings },
   { to: '/about', label: 'Data & about', short: 'About', icon: Info },
@@ -65,7 +66,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             onClick={() => setPaletteOpen(true)}
             className="mb-3 flex h-10 items-center gap-2 rounded-2xl bg-black/[0.04] px-3 text-left text-sm text-muted transition hover:bg-black/[0.07] dark:bg-white/[0.06] dark:hover:bg-white/[0.1]"
           >
-            <Search className="h-4 w-4" /> <span className="flex-1">Search…</span> <Kbd>Ctrl K</Kbd>
+            <Search className="h-4 w-4" /> <span className="flex-1">Searchâ€¦</span> <Kbd>Ctrl K</Kbd>
           </button>
           <ul className="space-y-0.5">
             {NAV.map((n) => (
@@ -93,7 +94,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               <span className="grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-brand-400 to-brand-700 text-[11px] font-bold text-white">
                 {(user?.display_name ?? 'G').slice(0, 1).toUpperCase()}
               </span>
-              <span className="truncate">{user ? user.display_name : 'Guest · on-device'}</span>
+              <span className="truncate">{user ? user.display_name : 'Guest Â· on-device'}</span>
             </NavLink>
           </div>
         </nav>
@@ -146,3 +147,4 @@ export function AppShell({ children }: { children: ReactNode }) {
     </div>
   );
 }
+
