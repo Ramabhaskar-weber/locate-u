@@ -1,4 +1,4 @@
-﻿import { Car, Compass, Home, Info, Map as MapIcon, Moon, Search, Settings, Star, Sun, SunMoon } from 'lucide-react';
+﻿import { Car, Compass, Home, Sparkles, Info, Map as MapIcon, Moon, Search, Settings, Star, Sun, SunMoon } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useHotkey } from '@/hooks';
@@ -14,6 +14,7 @@ const NAV = [
   { to: '/', label: 'Home', icon: Home, end: true },
   { to: '/map', label: 'World map', short: 'Map', icon: MapIcon },
   { to: '/india', label: 'India explorer', short: 'India', icon: Compass },
+  { to: '/explore', label: 'Travel Guide & AI', short: 'Guide', icon: Sparkles },
   { to: '/transport', label: 'Transport Hub', short: 'Transport', icon: Car },
   { to: '/saved', label: 'Saved places', short: 'Saved', icon: Star },
   { to: '/settings', label: 'Settings', icon: Settings },
@@ -147,4 +148,5 @@ export function AppShell({ children }: { children: ReactNode }) {
     </div>
   );
 }
+
 

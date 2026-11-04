@@ -14,6 +14,7 @@ const MapPage = lazy(() => import('./pages/MapPage'));
 const IndiaPage = lazy(() => import('./pages/IndiaPage'));
 const StatePage = lazy(() => import('./pages/StatePage'));
 const TransportPage = lazy(() => import('./pages/TransportPage'));
+const ExploreHubPage = lazy(() => import('./pages/ExploreHubPage'));
 const SavedPage = lazy(() => import('./pages/SavedPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
@@ -61,7 +62,7 @@ export default function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/map" element={<MapPage />} />
                 <Route path="/india" element={<IndiaPage />} />
-                <Route path="/india/:code" element={<StatePage />} />`n                <Route path="/transport" element={<TransportPage />} />
+                <Route path="/india/:code" element={<StatePage />} />`n                <Route path="/transport" element={<TransportPage />} />`n                <Route path="/explore" element={<ExploreHubPage />} />
                 <Route path="/saved" element={<SavedPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/about" element={<AboutPage />} />
@@ -74,4 +75,5 @@ export default function App() {
     </QueryClientProvider>
   );
 }
+
 
