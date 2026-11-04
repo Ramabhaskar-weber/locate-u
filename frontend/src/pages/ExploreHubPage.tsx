@@ -10,21 +10,34 @@ import {
   ShieldAlert,
   Search,
   Droplet,
-  Fuel
+  Fuel,
+  Car,
+  Crosshair,
+  CheckCircle2,
+  MapPin,
+  Clock
 } from 'lucide-react';
 import { Card, Glass, Segmented } from '@/components/ui';
+import { useMap } from '@/stores/map';
+import { useGeolocation } from '@/hooks';
 import {
   ATTRACTIONS,
   FOOD_SPOTS,
   STAYS,
+  PUBLIC_UTILITIES,
   EMERGENCY_CONTACTS
 } from '@/lib/travelEngine';
 
-type HubTab = 'attractions' | 'food' | 'stays' | 'ai' | 'sos' | 'utilities';
+type HubTab = 'attractions' | 'food' | 'stays' | 'utilities' | 'ai' | 'sos';
+type UtilityFilter = 'all' | 'toilets' | 'petrol' | 'hospitals' | 'water' | 'atm' | 'police';
 
 export default function ExploreHubPage() {
+  const user = useMap((s) => s.user);
+  const geo = useGeolocation();
   const [tab, setTab] = useState<HubTab>('attractions');
   const [search, setSearch] = useState('');
+  const [utilityFilter, setUtilityFilter] = useState<UtilityFilter>('all');
+  
   const [aiDays, setAiDays] = useState<'1' | '3' | 'weekend'>('3');
   const [chatInput, setChatInput] = useState('');
   const [chatMessages, setChatMessages] = useState<Array<{ sender: 'user' | 'ai'; text: string }>>([
@@ -37,7 +50,7 @@ export default function ExploreHubPage() {
     const q = chatInput.trim();
     const userMsg = { sender: 'user' as const, text: q };
     
-    let reply = `Here are some recommendations for "${q}":\n\n1. Must-visit: Explore nearby heritage and scenic coastal viewpoints.\n2. Food tip: Try the local traditional thali or authentic sweets.\n3. Best timing: Mornings (8 AM - 11 AM) and evenings (4:30 PM - 7 PM) avoid peak heat.\n4. Transport: You can use our Transport Hub to book a 1-click ride directly there!`;
+    let reply = `Here are some recommendations for "${q}":\n\n1. Must-visit: Explore nearby heritage and scenic coastal viewpoints.\n2. Food tip: Try the local traditional thali or authentic sweets.\n3. Best timing: Mornings (8 AM - 11 AM) and evenings (4:30 PM - 7 PM) avoid peak heat.\n4. Transport: You can use our Transport Hub to compare Ola, Rapido and Uber fares directly!`;
     if (q.toLowerCase().includes('kakinada')) {
       reply = `In Kakinada, do not miss:\n• Coringa Mangrove Sanctuary & boat safari\n• Uppada Beach & handloom silk weaving\n• Subbayya Gari authentic Andhra Bhojanam\n• Famous hot Gottam Kaja from Kotaiah sweet shop!`;
     } else if (q.toLowerCase().includes('food') || q.toLowerCase().includes('eat')) {
@@ -57,19 +70,49 @@ export default function ExploreHubPage() {
   const filteredStays = STAYS.filter(
     (s) => s.name.toLowerCase().includes(search.toLowerCase()) || s.location.toLowerCase().includes(search.toLowerCase())
   );
+  const filteredUtilities = PUBLIC_UTILITIES.filter((u) => {
+    const matchesCategory = utilityFilter === 'all' || u.category === utilityFilter;
+    const matchesSearch = u.name.toLowerCase().includes(search.toLowerCase()) || u.address.toLowerCase().includes(search.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <Glass className="p-6 sm:p-8">
-        <div className="inline-flex items-center gap-2 rounded-full bg-brand-500/10 px-3 py-1 text-xs font-semibold text-brand-600 dark:text-brand-300">
-          <Sparkles className="h-3.5 w-3.5" /> All-in-One Travel Super-App
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-brand-500/10 px-3 py-1 text-xs font-semibold text-brand-600 dark:text-brand-300">
+              <Sparkles className="h-3.5 w-3.5" /> All-in-One Travel Companion
+            </div>
+            <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+              Travel & Tourist Guide
+            </h1>
+            <p className="mt-1 text-sm text-muted sm:text-base">
+              Discover iconic tourist attractions, local food, verified stays, public utilities & AI trip itineraries.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:items-end gap-1">
+            {user ? (
+              <div className="flex items-center gap-2 rounded-2xl bg-emerald-500/10 p-3 text-xs font-medium text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                <div>
+                  <div className="font-semibold">GPS Location Active</div>
+                  <div className="font-mono text-[11px] opacity-80">{user.lat.toFixed(4)}°N, {user.lon.toFixed(4)}°E</div>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => geo.locate()}
+                disabled={geo.status === 'locating'}
+                className="flex items-center gap-2 rounded-2xl bg-brand-600 px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-brand-700 active:scale-95"
+              >
+                <Crosshair className={`h-4 w-4 ${geo.status === 'locating' ? 'animate-spin' : ''}`} />
+                <span>{geo.status === 'locating' ? 'Finding GPS...' : 'Detect Exact Live Location'}</span>
+              </button>
+            )}
+          </div>
         </div>
-        <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
-          Travel & Tourist Guide
-        </h1>
-        <p className="mt-1 text-sm text-muted sm:text-base">
-          Discover iconic tourist attractions, local food, verified stays, AI trip itineraries, and 1-tap emergency helplines.
-        </p>
       </Glass>
 
       <div className="flex justify-center overflow-x-auto pb-2">
@@ -81,9 +124,9 @@ export default function ExploreHubPage() {
             { value: 'attractions', label: 'Attractions', icon: <Compass className="h-4 w-4" /> },
             { value: 'food', label: 'Food & Dining', icon: <Utensils className="h-4 w-4" /> },
             { value: 'stays', label: 'Stays & Hotels', icon: <Hotel className="h-4 w-4" /> },
+            { value: 'utilities', label: 'Public Utilities', icon: <Droplet className="h-4 w-4" /> },
             { value: 'ai', label: 'AI Trip Planner', icon: <Bot className="h-4 w-4" /> },
             { value: 'sos', label: 'Emergency SOS', icon: <ShieldAlert className="h-4 w-4" /> },
-            { value: 'utilities', label: 'Public Utilities', icon: <Droplet className="h-4 w-4" /> },
           ]}
         />
       </div>
@@ -114,7 +157,9 @@ export default function ExploreHubPage() {
                 </div>
                 <div className="mt-4 pt-3 border-t hairline flex items-center justify-between text-xs font-medium">
                   <span className="text-emerald-600 dark:text-emerald-400">✨ {a.famousFor}</span>
-                  <a href={`/map?q=${encodeURIComponent(a.name)}`} className="text-brand-600 hover:underline dark:text-brand-300">View on Map →</a>
+                  <a href={`/transport?dest=${encodeURIComponent(a.name + ', ' + a.district)}`} className="text-brand-600 hover:underline dark:text-brand-300">
+                    Ride here (1-Click) →
+                  </a>
                 </div>
               </div>
             ))}
@@ -124,6 +169,15 @@ export default function ExploreHubPage() {
 
       {tab === 'food' && (
         <Card title="Food Discovery System" subtitle="Famous regional dining, Andhra messes, iconic sweets & cafes." icon={<Utensils className="h-5 w-5" />}>
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Filter food by name or city (e.g. Subbayya, Kaja, Biryani, Idli)..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full rounded-2xl border border-black/10 bg-black/[0.02] py-2 px-4 text-xs focus:outline-none dark:border-white/10 dark:bg-white/[0.04]"
+            />
+          </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filteredFood.map((f) => (
               <div key={f.id} className="flex flex-col justify-between rounded-3xl border border-black/10 bg-black/[0.02] p-5 dark:border-white/10 dark:bg-white/[0.04]">
@@ -134,10 +188,15 @@ export default function ExploreHubPage() {
                   </div>
                   <h3 className="mt-2 font-bold text-base">{f.name}</h3>
                   <p className="text-xs text-muted font-medium">{f.city}</p>
-                  <p className="mt-2 text-xs text-muted">{f.specialty}</p>
+                  <p className="mt-2 text-xs text-muted leading-relaxed">{f.specialty}</p>
                 </div>
-                <a href={`/transport?destName=${encodeURIComponent(f.name + ' ' + f.city)}`} className="mt-4 flex h-8 items-center justify-center gap-1.5 rounded-xl bg-brand-600 text-xs font-semibold text-white hover:bg-brand-700">
-                  <span>Ride here (1-Click)</span> <ExternalLink className="h-3 w-3" />
+
+                <a
+                  href={`/transport?dest=${encodeURIComponent(f.name + ', ' + f.city)}`}
+                  className="mt-4 flex h-9 items-center justify-center gap-1.5 rounded-xl bg-brand-600 text-xs font-semibold text-white hover:bg-brand-700 transition"
+                >
+                  <Car className="h-3.5 w-3.5" />
+                  <span>Compare & Ride Here</span>
                 </a>
               </div>
             ))}
@@ -163,9 +222,99 @@ export default function ExploreHubPage() {
                     ))}
                   </div>
                 </div>
-                <a href={s.bookingUrl} target="_blank" rel="noopener noreferrer" className="mt-5 flex h-9 items-center justify-center gap-1.5 rounded-xl bg-brand-600 text-xs font-semibold text-white hover:bg-brand-700">
-                  <span>Check Availability</span> <ExternalLink className="h-3 w-3" />
-                </a>
+                <div className="mt-5 flex gap-2">
+                  <a href={s.bookingUrl} target="_blank" rel="noopener noreferrer" className="flex-1 flex h-8 items-center justify-center gap-1 rounded-xl bg-brand-600 text-xs font-semibold text-white hover:bg-brand-700">
+                    <span>Book Stay</span> <ExternalLink className="h-3 w-3" />
+                  </a>
+                  <a href={`/transport?dest=${encodeURIComponent(s.name + ', ' + s.location)}`} className="flex-1 flex h-8 items-center justify-center gap-1 rounded-xl bg-black/5 text-xs font-semibold hover:bg-black/10 dark:bg-white/10">
+                    <Car className="h-3 w-3" /> <span>Ride Here</span>
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {tab === 'utilities' && (
+        <Card title="Public Utility Finder" subtitle="Clean public restrooms, fuel/EV stations, 24/7 hospitals, ATMs and clean water points." icon={<Droplet className="h-5 w-5" />}>
+          <div className="mb-4 flex flex-wrap gap-2">
+            <button onClick={() => setUtilityFilter('all')} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${utilityFilter === 'all' ? 'bg-brand-600 text-white' : 'bg-black/5 dark:bg-white/10'}`}>All Facilities</button>
+            <button onClick={() => setUtilityFilter('toilets')} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${utilityFilter === 'toilets' ? 'bg-brand-600 text-white' : 'bg-black/5 dark:bg-white/10'}`}>🚻 Clean Toilets</button>
+            <button onClick={() => setUtilityFilter('petrol')} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${utilityFilter === 'petrol' ? 'bg-brand-600 text-white' : 'bg-black/5 dark:bg-white/10'}`}>⛽ Fuel & EV</button>
+            <button onClick={() => setUtilityFilter('hospitals')} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${utilityFilter === 'hospitals' ? 'bg-brand-600 text-white' : 'bg-black/5 dark:bg-white/10'}`}>🏥 24/7 Hospitals</button>
+            <button onClick={() => setUtilityFilter('water')} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${utilityFilter === 'water' ? 'bg-brand-600 text-white' : 'bg-black/5 dark:bg-white/10'}`}>💧 RO Water ATMs</button>
+            <button onClick={() => setUtilityFilter('atm')} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${utilityFilter === 'atm' ? 'bg-brand-600 text-white' : 'bg-black/5 dark:bg-white/10'}`}>🏧 ATMs</button>
+            <button onClick={() => setUtilityFilter('police')} className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${utilityFilter === 'police' ? 'bg-brand-600 text-white' : 'bg-black/5 dark:bg-white/10'}`}>🚓 Police Assistance</button>
+          </div>
+
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Search utility by name or location (e.g. Swachh Bharat, GGH, Indian Oil, SBI)..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full rounded-2xl border border-black/10 bg-black/[0.02] py-2 px-4 text-xs focus:outline-none dark:border-white/10 dark:bg-white/[0.04]"
+            />
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            {filteredUtilities.map((u) => (
+              <div key={u.id} className="flex flex-col justify-between rounded-3xl border border-black/10 bg-black/[0.02] p-5 dark:border-white/10 dark:bg-white/[0.04]">
+                <div>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
+                        {u.category.toUpperCase()} · {u.city}
+                      </span>
+                      <h4 className="font-bold text-base mt-0.5">{u.name}</h4>
+                      <p className="text-xs text-muted flex items-center gap-1 mt-1">
+                        <MapPin className="h-3 w-3" /> {u.address}
+                      </p>
+                    </div>
+                    {u.rating && (
+                      <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                        {u.rating}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="mt-2.5 flex items-center gap-2 text-xs text-muted">
+                    <Clock className="h-3.5 w-3.5 text-brand-600 dark:text-brand-400" />
+                    <span>{u.timings}</span>
+                  </div>
+
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {u.facilities.map((fac) => (
+                      <span key={fac} className="rounded-full bg-black/5 px-2 py-0.5 text-[10px] text-muted dark:bg-white/10">
+                        ✓ {fac}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-4 pt-3 border-t hairline flex gap-2">
+                  <a
+                    href={`/transport?dest=${encodeURIComponent(u.name + ', ' + u.address)}`}
+                    className="flex-1 flex h-8 items-center justify-center gap-1 rounded-xl bg-brand-600 text-[11px] font-semibold text-white hover:bg-brand-700 transition"
+                  >
+                    <Car className="h-3 w-3" /> <span>Ride Here</span>
+                  </a>
+                  <a
+                    href={`/map?q=${encodeURIComponent(u.name + ' ' + u.city)}`}
+                    className="flex h-8 px-3 items-center justify-center rounded-xl bg-black/5 text-[11px] font-semibold hover:bg-black/10 dark:bg-white/10"
+                  >
+                    <span>Map ↗</span>
+                  </a>
+                  {u.phone && (
+                    <a
+                      href={`tel:${u.phone}`}
+                      className="flex h-8 px-3 items-center justify-center gap-1 rounded-xl bg-red-600 text-xs font-semibold text-white hover:bg-red-700"
+                    >
+                      <PhoneCall className="h-3 w-3" /> <span>Call</span>
+                    </a>
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -231,34 +380,6 @@ export default function ExploreHubPage() {
                 </a>
               </div>
             ))}
-          </div>
-        </Card>
-      )}
-
-      {tab === 'utilities' && (
-        <Card title="Public Utility Finder" subtitle="Quick directions to essential public amenities near you." icon={<Droplet className="h-5 w-5" />}>
-          <div className="grid gap-3 sm:grid-cols-3">
-            <a href="/map?q=public+toilets" className="flex items-center gap-3 p-4 rounded-2xl border border-black/10 bg-black/[0.02] hover:bg-black/[0.05] dark:border-white/10 dark:bg-white/[0.04]">
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-blue-500/10 text-blue-600"><Droplet className="h-5 w-5" /></div>
-              <div>
-                <h4 className="text-sm font-bold">Public Restrooms</h4>
-                <p className="text-xs text-muted">Clean Swachh Bharat Toilets</p>
-              </div>
-            </a>
-            <a href="/map?q=fuel+station" className="flex items-center gap-3 p-4 rounded-2xl border border-black/10 bg-black/[0.02] hover:bg-black/[0.05] dark:border-white/10 dark:bg-white/[0.04]">
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-amber-500/10 text-amber-600"><Fuel className="h-5 w-5" /></div>
-              <div>
-                <h4 className="text-sm font-bold">Petrol & EV Chargers</h4>
-                <p className="text-xs text-muted">Fuel stations & EV charging</p>
-              </div>
-            </a>
-            <a href="/map?q=hospital" className="flex items-center gap-3 p-4 rounded-2xl border border-black/10 bg-black/[0.02] hover:bg-black/[0.05] dark:border-white/10 dark:bg-white/[0.04]">
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-red-500/10 text-red-600"><ShieldAlert className="h-5 w-5" /></div>
-              <div>
-                <h4 className="text-sm font-bold">24/7 Hospitals</h4>
-                <p className="text-xs text-muted">Emergency trauma centers</p>
-              </div>
-            </a>
           </div>
         </Card>
       )}

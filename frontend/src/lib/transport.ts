@@ -25,10 +25,22 @@ export interface MetroService {
 export interface TransitService {
   id: string;
   name: string;
-  category: 'train' | 'bus';
+  category: 'train' | 'bus' | 'flight';
   description: string;
   url: string;
   official: boolean;
+}
+
+export interface AirportHub {
+  id: string;
+  code: string;
+  name: string;
+  city: string;
+  state: string;
+  distanceFromRegion: string;
+  type: 'Domestic' | 'International';
+  popularRoutes: string;
+  flightSearchUrl: string;
 }
 
 const f = (n: number) => n.toFixed(6);
@@ -86,6 +98,107 @@ export function getRideServices(dest?: LatLon | null, origin?: LatLon | null, pl
     },
   ];
 }
+
+export const AIRLINE_SERVICES: TransitService[] = [
+  {
+    id: 'indigo',
+    name: 'IndiGo Airlines',
+    category: 'flight',
+    description: "India's largest domestic carrier with maximum direct flights & connectivity",
+    url: 'https://www.goindigo.in/',
+    official: true,
+  },
+  {
+    id: 'airindia',
+    name: 'Air India',
+    category: 'flight',
+    description: 'National flag carrier with domestic flights and major international destinations',
+    url: 'https://www.airindia.com/',
+    official: true,
+  },
+  {
+    id: 'akasa',
+    name: 'Akasa Air',
+    category: 'flight',
+    description: 'Budget-friendly domestic airline with warm service & comfortable seating',
+    url: 'https://www.akasaair.com/',
+    official: true,
+  },
+  {
+    id: 'google-flights',
+    name: 'Google Flights Compare',
+    category: 'flight',
+    description: 'Real-time fare calendar, cheapest dates & flight comparison across all airlines',
+    url: 'https://www.google.com/travel/flights',
+    official: false,
+  },
+  {
+    id: 'skyscanner',
+    name: 'Skyscanner India',
+    category: 'flight',
+    description: 'Compare cheapest domestic and international air tickets with price alerts',
+    url: 'https://www.skyscanner.co.in/',
+    official: false,
+  },
+];
+
+export const AIRPORT_HUBS: AirportHub[] = [
+  {
+    id: 'rja',
+    code: 'RJA',
+    name: 'Rajahmundry Domestic Airport',
+    city: 'Rajahmundry (Madhurapudi)',
+    state: 'Andhra Pradesh',
+    distanceFromRegion: '~60 km from Kakinada (Nearest Airport)',
+    type: 'Domestic',
+    popularRoutes: 'Hyderabad (HYD), Bengaluru (BLR), Chennai (MAA)',
+    flightSearchUrl: 'https://www.google.com/travel/flights?q=flights+from+RJA',
+  },
+  {
+    id: 'vtz',
+    code: 'VTZ',
+    name: 'Visakhapatnam International Airport',
+    city: 'Visakhapatnam',
+    state: 'Andhra Pradesh',
+    distanceFromRegion: '~145 km from Kakinada',
+    type: 'International',
+    popularRoutes: 'Delhi, Mumbai, Bengaluru, Hyderabad, Singapore, Dubai',
+    flightSearchUrl: 'https://www.google.com/travel/flights?q=flights+from+VTZ',
+  },
+  {
+    id: 'vga',
+    code: 'VGA',
+    name: 'Vijayawada International Airport (Gannavaram)',
+    city: 'Vijayawada / Amaravati',
+    state: 'Andhra Pradesh',
+    distanceFromRegion: '~200 km from Kakinada',
+    type: 'International',
+    popularRoutes: 'Hyderabad, Bengaluru, Delhi, Tirupati, Sharjah',
+    flightSearchUrl: 'https://www.google.com/travel/flights?q=flights+from+VGA',
+  },
+  {
+    id: 'hyd',
+    code: 'HYD',
+    name: 'Rajiv Gandhi International Airport (RGIA)',
+    city: 'Hyderabad',
+    state: 'Telangana',
+    distanceFromRegion: 'Major Southern Hub',
+    type: 'International',
+    popularRoutes: 'All major Indian cities, USA, Europe, Gulf, Southeast Asia',
+    flightSearchUrl: 'https://www.google.com/travel/flights?q=flights+from+HYD',
+  },
+  {
+    id: 'blr',
+    code: 'BLR',
+    name: 'Kempegowda International Airport',
+    city: 'Bengaluru',
+    state: 'Karnataka',
+    distanceFromRegion: 'Major Tech & Flight Hub',
+    type: 'International',
+    popularRoutes: 'Direct flights to over 100 domestic and global destinations',
+    flightSearchUrl: 'https://www.google.com/travel/flights?q=flights+from+BLR',
+  },
+];
 
 export const METRO_SYSTEMS: MetroService[] = [
   {

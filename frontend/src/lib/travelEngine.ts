@@ -28,6 +28,18 @@ export interface StayOption {
   bookingUrl: string;
 }
 
+export interface PublicUtility {
+  id: string;
+  name: string;
+  category: 'toilets' | 'petrol' | 'hospitals' | 'water' | 'atm' | 'police';
+  address: string;
+  city: string;
+  timings: string;
+  phone?: string;
+  rating?: string;
+  facilities: string[];
+}
+
 export const ATTRACTIONS: TouristPlace[] = [
   { id: '1', name: 'Coringa Wildlife Sanctuary & Mangroves', category: 'Nature', state: 'Andhra Pradesh', district: 'Kakinada', description: 'Second largest mangrove forest in India with scenic boardwalks, boat rides and rare birds.', bestTime: 'Oct - March', famousFor: 'Mangrove Boating & Fishing Cat' },
   { id: '2', name: 'Uppada Beach & Handloom Silk Village', category: 'Beach', state: 'Andhra Pradesh', district: 'Kakinada', description: 'Famous coastal stretch and home to UNESCO-recognized Jamdani Uppada silk sarees.', bestTime: 'Nov - Feb', famousFor: 'Sunrise, Beach Drive & Silk Weaving' },
@@ -40,18 +52,115 @@ export const ATTRACTIONS: TouristPlace[] = [
 ];
 
 export const FOOD_SPOTS: FoodSpot[] = [
-  { id: 'f1', name: 'Subbayya Gari Hotel', type: 'Local Mess', city: 'Kakinada & AP', specialty: 'Authentic 30-item Andhra Bhojanam served on banana leaf with podi, ghee & sweets', priceRange: '₹₹' },
-  { id: 'f2', name: 'Kotaiah Kaja Sweet Stall', type: 'Street Food', city: 'Kakinada', specialty: 'World-famous Kakinada Gottam Kaja (hot, juicy traditional sweet delicacy)', priceRange: '₹' },
-  { id: 'f3', name: 'Paradise & Bawarchi', type: 'Biryani & Non-Veg', city: 'Hyderabad', specialty: 'Hyderabadi Dum Biryani with mirchi ka salan and dahi chutney', priceRange: '₹₹' },
-  { id: 'f4', name: 'Vidyarthi Bhavan', type: 'Vegetarian', city: 'Bengaluru', specialty: 'Crispy heritage Masala Dosa with rich potato filling and chutney', priceRange: '₹' },
-  { id: 'f5', name: 'Murugan Idli Shop', type: 'Vegetarian', city: 'Chennai / Madurai', specialty: 'Soft steamed idlis served with four signature chutneys and spicy podi', priceRange: '₹' },
+  { id: 'f1', name: 'Subbayya Gari Hotel', type: 'Local Mess', city: 'Kakinada', specialty: 'Authentic 30-item Andhra Bhojanam on banana leaf with podi, ghee, gutti vankaya & sweets', priceRange: '₹₹' },
+  { id: 'f2', name: 'Kotaiah Kaja Sweet Stall', type: 'Street Food', city: 'Kakinada', specialty: 'World-famous authentic hot Kakinada Gottam Kaja (century-old sweet legacy)', priceRange: '₹' },
+  { id: 'f3', name: 'Yati Mess & Seafood', type: 'Biryani & Non-Veg', city: 'Kakinada Coast', specialty: 'Fresh Godavari seafood thali, Royyala vepudu (Prawns fry) and Crab curry', priceRange: '₹₹' },
+  { id: 'f4', name: 'Paradise & Bawarchi', type: 'Biryani & Non-Veg', city: 'Hyderabad', specialty: 'Authentic Hyderabadi Mutton & Chicken Dum Biryani with mirchi ka salan', priceRange: '₹₹' },
+  { id: 'f5', name: 'Vidyarthi Bhavan', type: 'Vegetarian', city: 'Bengaluru', specialty: 'Crispy heritage Masala Dosa with rich potato filling and coconut chutney', priceRange: '₹' },
+  { id: 'f6', name: 'Murugan Idli Shop', type: 'Vegetarian', city: 'Chennai / Madurai', specialty: 'Pillowy soft steamed idlis served with four signature chutneys and spicy podi', priceRange: '₹' },
 ];
 
 export const STAYS: StayOption[] = [
-  { id: 's1', name: 'AP Tourism Haritha Beach Resort', type: 'Resort', location: 'Kakinada / Coastal AP', pricePerNight: '₹2,200 - ₹3,800', amenities: ['Beachfront View', 'Restaurant', 'Free Parking', 'AC'], bookingUrl: 'https://tourism.ap.gov.in/' },
-  { id: 's2', name: 'Green Coconut Homestay', type: 'Homestay', location: 'Konaseema Delta', pricePerNight: '₹1,800 - ₹2,500', amenities: ['River Backwaters', 'Home Cooked Food', 'Garden', 'Wi-Fi'], bookingUrl: 'https://www.makemytrip.com/homestays/' },
-  { id: 's3', name: 'Zostel Backpacker Hostel', type: 'Budget Lodge', location: 'Popular Tourist Cities', pricePerNight: '₹799 - ₹1,499', amenities: ['Common Room', 'High Speed Wi-Fi', 'Lockers', 'Cafe'], bookingUrl: 'https://www.zostel.com/' },
-  { id: 's4', name: 'ITC Grand & Heritage Palace Hotels', type: 'Hotel', location: 'Hyderabad / Bengaluru / Delhi', pricePerNight: '₹6,500 - ₹12,000', amenities: ['Luxury Spa', 'Swimming Pool', 'Fine Dining', 'Gym'], bookingUrl: 'https://www.booking.com/' },
+  { id: 's1', name: 'AP Tourism Haritha Beach Resort', type: 'Resort', location: 'Kakinada Beach Road', pricePerNight: '₹2,200 - ₹3,800', amenities: ['Beachfront View', 'Restaurant', 'Free Parking', 'AC Rooms'], bookingUrl: 'https://tourism.ap.gov.in/' },
+  { id: 's2', name: 'Royal Park & Grand Kakinada', type: 'Hotel', location: 'Main Town, Kakinada', pricePerNight: '₹2,800 - ₹4,500', amenities: ['Multi-cuisine Dining', 'Free Wi-Fi', '24/7 Room Service', 'AC'], bookingUrl: 'https://www.makemytrip.com/hotels/' },
+  { id: 's3', name: 'Green Coconut Backwater Homestay', type: 'Homestay', location: 'Dindi / Konaseema Delta', pricePerNight: '₹1,800 - ₹2,800', amenities: ['River Backwaters', 'Home Cooked Andhra Food', 'Boat Rides', 'Garden'], bookingUrl: 'https://www.makemytrip.com/homestays/' },
+  { id: 's4', name: 'Zostel Backpacker Hostels', type: 'Budget Lodge', location: 'Major Indian Tourist Cities', pricePerNight: '₹799 - ₹1,499', amenities: ['Backpacker Bunks', 'High Speed Wi-Fi', 'Lockers', 'Community Cafe'], bookingUrl: 'https://www.zostel.com/' },
+];
+
+export const PUBLIC_UTILITIES: PublicUtility[] = [
+  {
+    id: 'u1',
+    name: 'Swachh Bharat Clean Public Restroom',
+    category: 'toilets',
+    address: 'Near Beach Road Promenade',
+    city: 'Kakinada',
+    timings: 'Open 24 Hours',
+    facilities: ['Western & Indian Toilets', 'Water Available', 'Handwash Station', 'Wheelchair Ramp'],
+    rating: '4.4 ★',
+  },
+  {
+    id: 'u2',
+    name: 'Railway Station Executive Lounge & Restrooms',
+    category: 'toilets',
+    address: 'Kakinada Town Railway Station (Platform 1)',
+    city: 'Kakinada',
+    timings: 'Open 24 Hours',
+    facilities: ['Clean Restrooms', 'Shower Available', 'Air Conditioned', 'Charging Points'],
+    rating: '4.6 ★',
+  },
+  {
+    id: 'u3',
+    name: 'Indian Oil & Tata Power EV Fast Charging Station',
+    category: 'petrol',
+    address: 'Bhanugudi Junction / Main Road',
+    city: 'Kakinada',
+    timings: 'Open 24 Hours',
+    facilities: ['Petrol & Diesel', '60kW EV Fast Charger', 'Free Air & Water', 'Clean Washroom'],
+    rating: '4.5 ★',
+  },
+  {
+    id: 'u4',
+    name: 'HPCL Auto LPG & Fuel Station',
+    category: 'petrol',
+    address: 'Port Road Near Old Bus Stand',
+    city: 'Kakinada',
+    timings: 'Open 24 Hours',
+    facilities: ['Petrol', 'Diesel', 'Air Pressure Gauge', 'Digital Payments'],
+    rating: '4.3 ★',
+  },
+  {
+    id: 'u5',
+    name: 'Government General Hospital (GGH) - Trauma & Emergency',
+    category: 'hospitals',
+    address: 'Rangampeta, Medical College Road',
+    city: 'Kakinada',
+    timings: 'Open 24 Hours (Emergency)',
+    phone: '0884-2362244',
+    facilities: ['24/7 Trauma Care', 'Blood Bank', 'Free Emergency Services', 'Ambulance On-Call'],
+    rating: '4.2 ★',
+  },
+  {
+    id: 'u6',
+    name: 'Apollo 24/7 Pharmacy & First Aid Clinic',
+    category: 'hospitals',
+    address: 'Cinema Road, Near RTC Complex',
+    city: 'Kakinada',
+    timings: 'Open 24 Hours',
+    phone: '1860-500-0101',
+    facilities: ['24/7 Medicines', 'First Aid Dressing', 'Baby Care Essentials', 'Doctor Consultation'],
+    rating: '4.7 ★',
+  },
+  {
+    id: 'u7',
+    name: 'Municipal RO Purified Drinking Water ATM',
+    category: 'water',
+    address: 'Gandhi Nagar Central Park & Market',
+    city: 'Kakinada',
+    timings: '6:00 AM - 10:00 PM',
+    facilities: ['Chilled RO Water', '₹1 per Liter', 'Contactless Coin / UPI Dispenser'],
+    rating: '4.5 ★',
+  },
+  {
+    id: 'u8',
+    name: 'State Bank of India (SBI) 24/7 ATM & CDM',
+    category: 'atm',
+    address: 'Main Road Branch, Near Town Hall',
+    city: 'Kakinada',
+    timings: 'Open 24 Hours',
+    facilities: ['Cash Withdrawal', 'Cash Deposit (CDM)', 'Passbook Printing', 'Security Guard'],
+    rating: '4.4 ★',
+  },
+  {
+    id: 'u9',
+    name: 'One Town Police Station & Tourist Assistance',
+    category: 'police',
+    address: 'Main Bazaar Road',
+    city: 'Kakinada',
+    timings: 'Open 24 Hours',
+    phone: '0884-2373333',
+    facilities: ['24/7 Tourist Assistance', 'Lost & Found Reporting', 'Emergency Police Patrol'],
+    rating: '4.3 ★',
+  },
 ];
 
 export const EMERGENCY_CONTACTS = [

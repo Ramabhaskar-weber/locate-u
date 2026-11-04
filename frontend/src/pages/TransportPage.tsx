@@ -1,4 +1,5 @@
-﻿import { useState, useMemo } from 'react';
+﻿import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   Car,
   Compass,
@@ -10,18 +11,24 @@ import {
   TrainFront,
   Zap,
   Clock,
-  Award
+  Award,
+  Plane,
+  Crosshair,
+  CheckCircle2
 } from 'lucide-react';
 import { Card, Glass, Segmented } from '@/components/ui';
 import { useMap } from '@/stores/map';
+import { useGeolocation } from '@/hooks';
 import {
+  AIRLINE_SERVICES,
+  AIRPORT_HUBS,
   BUS_SERVICES,
   getRideServices,
   METRO_SYSTEMS,
   RAIL_SERVICES,
 } from '@/lib/transport';
 
-type TransportTab = 'rides' | 'metro' | 'trains' | 'buses';
+type TransportTab = 'rides' | 'flights' | 'metro' | 'trains' | 'buses';
 
 interface FareEstimate {
   id: string;
@@ -34,10 +41,22 @@ interface FareEstimate {
 }
 
 export default function TransportPage() {
+  const [searchParams] = useSearchParams();
   const user = useMap((s) => s.user);
+  const geo = useGeolocation();
+
+  const initialDest = searchParams.get('dest') || searchParams.get('destName') || '';
+  const [destInput, setDestInput] = useState(initialDest);
   const [tab, setTab] = useState<TransportTab>('rides');
-  const [destInput, setDestInput] = useState('');
   const [metroSearch, setMetroSearch] = useState('');
+
+  useEffect(() => {
+    const q = searchParams.get('dest') || searchParams.get('destName');
+    if (q) {
+      setDestInput(q);
+      setTab('rides');
+    }
+  }, [searchParams]);
 
   const approxDistanceKm = useMemo(() => {
     if (!destInput.trim()) return null;
@@ -61,7 +80,7 @@ export default function TransportPage() {
     const list: FareEstimate[] = [
       {
         id: 'rapido-bike',
-        name: 'Rapido Bike',
+        name: 'Rapido Bike Taxi',
         vehicle: '1 Rider · Fastest in Traffic',
         estimatedPrice: rapidoBike,
         etaMins: Math.round(d * 2.2),
@@ -131,41 +150,52 @@ export default function TransportPage() {
         <div className="relative z-10 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-brand-500/10 px-3 py-1 text-xs font-semibold text-brand-600 dark:text-brand-300">
-              <Zap className="h-3.5 w-3.5" /> Smart Rate Finder & Comparison
+              <Zap className="h-3.5 w-3.5" /> One-Click All-Transport Hub
             </div>
             <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
               Transport Hub
             </h1>
             <p className="mt-1 text-sm text-muted sm:text-base">
-              Compare fares across Ola, Rapido & Uber, find metro route maps, and access IRCTC & state bus portals.
+              Smart rate comparison across Ola, Rapido & Uber, Indian Airlines, Metros, IRCTC & State RTCs.
             </p>
           </div>
-          {user ? (
-            <div className="flex items-center gap-2 rounded-2xl bg-black/[0.04] p-3 text-xs font-medium dark:bg-white/[0.06]">
-              <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>
-                GPS Origin:{' '}
-                <strong className="font-mono">
-                  {user.lat.toFixed(4)}, {user.lon.toFixed(4)}
-                </strong>
-              </span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2 rounded-2xl bg-black/[0.04] p-3 text-xs text-muted dark:bg-white/[0.06]">
-              <MapPin className="h-4 w-4" />
-              <span>Enable GPS on the map for live origin pickup</span>
-            </div>
-          )}
+
+          <div className="flex flex-col gap-1.5 sm:items-end">
+            {user ? (
+              <div className="flex items-center gap-2 rounded-2xl bg-emerald-500/10 p-3 text-xs font-medium text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                <div>
+                  <div className="font-semibold">Live GPS Active</div>
+                  <div className="font-mono text-[11px] opacity-80">
+                    {user.lat.toFixed(4)}°N, {user.lon.toFixed(4)}°E (±{Math.round(user.accuracy || 10)}m)
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => geo.locate()}
+                disabled={geo.status === 'locating'}
+                className="flex items-center gap-2 rounded-2xl bg-brand-600 px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:bg-brand-700 active:scale-95"
+              >
+                <Crosshair className={`h-4 w-4 ${geo.status === 'locating' ? 'animate-spin' : ''}`} />
+                <span>{geo.status === 'locating' ? 'Locking GPS...' : 'Detect Exact Live Location'}</span>
+              </button>
+            )}
+            <span className="text-[10px] text-muted">
+              {user ? 'Used as pickup origin for all 1-click rides' : 'Tap to lock exact satellite GPS'}
+            </span>
+          </div>
         </div>
       </Glass>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center overflow-x-auto pb-1">
         <Segmented
           label="Transport category"
           value={tab}
           onChange={setTab}
           options={[
-            { value: 'rides', label: 'Ride Comparison & Cabs', icon: <Car className="h-4 w-4" /> },
+            { value: 'rides', label: 'Cabs & Auto Comparison', icon: <Car className="h-4 w-4" /> },
+            { value: 'flights', label: 'Flights & Airports', icon: <Plane className="h-4 w-4" /> },
             { value: 'metro', label: 'City Metros', icon: <TrainFront className="h-4 w-4" /> },
             { value: 'trains', label: 'Indian Railways (IRCTC)', icon: <Compass className="h-4 w-4" /> },
             { value: 'buses', label: 'State Buses & RTCs', icon: <Navigation className="h-4 w-4" /> },
@@ -175,8 +205,8 @@ export default function TransportPage() {
 
       {tab === 'rides' && (
         <Card
-          title="Compare & Find the Best Option"
-          subtitle="Type any destination to view live fare estimates and see the cheapest option first."
+          title="Compare & Find the Cheapest Option"
+          subtitle="Auto-compares real-time estimated rates across Rapido, Ola, and Uber."
           icon={<Car className="h-5 w-5" />}
         >
           <div className="mb-5">
@@ -184,22 +214,27 @@ export default function TransportPage() {
               <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
               <input
                 type="text"
-                placeholder="Where to? (e.g. Kakinada Beach, Jagannaickpur, Railway Station, Airport)..."
+                placeholder="Where to? (e.g. Subbayya Gari Hotel, Beach Road, Railway Station)..."
                 value={destInput}
                 onChange={(e) => setDestInput(e.target.value)}
                 className="w-full rounded-2xl border border-black/10 bg-black/[0.02] py-3 pl-10 pr-4 text-sm transition focus:border-brand-500 focus:outline-none dark:border-white/10 dark:bg-white/[0.04]"
               />
             </div>
+            {destInput && (
+              <p className="mt-1.5 px-1 text-xs text-brand-600 dark:text-brand-300">
+                Searching best rates for: <strong>{destInput}</strong>
+              </p>
+            )}
           </div>
 
           {comparison.length > 0 ? (
             <div className="space-y-4">
               <div className="flex items-center justify-between px-1">
                 <span className="text-xs font-semibold uppercase tracking-wider text-muted">
-                  Fare Estimates for ~{approxDistanceKm?.toFixed(1)} km trip
+                  Trip Estimate (~{approxDistanceKm?.toFixed(1)} km)
                 </span>
                 <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                  ✓ Ranked by Lowest Price
+                  ✓ Sorted by Cheapest Fare
                 </span>
               </div>
 
@@ -291,6 +326,105 @@ export default function TransportPage() {
             </div>
           )}
         </Card>
+      )}
+
+      {tab === 'flights' && (
+        <div className="space-y-6">
+          <Card
+            title="Airlines & Air Ticket Booking"
+            subtitle="Book flights directly through major Indian airlines or compare the lowest fares."
+            icon={<Plane className="h-5 w-5" />}
+          >
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {AIRLINE_SERVICES.map((a) => (
+                <div
+                  key={a.id}
+                  className="flex flex-col justify-between rounded-3xl border border-black/10 bg-black/[0.02] p-5 dark:border-white/10 dark:bg-white/[0.04]"
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-bold text-base">{a.name}</h4>
+                      {a.official ? (
+                        <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-[10px] font-semibold text-blue-600 dark:text-blue-400">
+                          Airline
+                        </span>
+                      ) : (
+                        <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+                          Compare
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-1.5 text-xs text-muted">{a.description}</p>
+                  </div>
+                  <a
+                    href={a.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 flex h-9 items-center justify-center gap-1.5 rounded-xl bg-brand-600 text-xs font-semibold text-white hover:bg-brand-700"
+                  >
+                    <span>Search Flights</span>
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          <Card
+            title="Nearby Airports for Andhra Pradesh & Region"
+            subtitle="Closest domestic and international airports with 1-click cab booking."
+            icon={<MapPin className="h-5 w-5" />}
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              {AIRPORT_HUBS.map((air) => (
+                <div
+                  key={air.id}
+                  className="flex flex-col justify-between rounded-3xl border border-black/10 bg-black/[0.02] p-5 dark:border-white/10 dark:bg-white/[0.04]"
+                >
+                  <div>
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <span className="rounded-md bg-brand-600/10 px-2 py-0.5 font-mono text-xs font-bold text-brand-600 dark:text-brand-300">
+                          {air.code}
+                        </span>
+                        <h4 className="mt-1 font-bold text-base">{air.name}</h4>
+                        <p className="text-xs text-brand-600 dark:text-brand-400 font-medium">{air.distanceFromRegion}</p>
+                      </div>
+                      <span className="rounded-full bg-black/5 px-2 py-0.5 text-[10px] dark:bg-white/10">
+                        {air.type}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-xs text-muted">
+                      <strong>Direct Flights:</strong> {air.popularRoutes}
+                    </p>
+                  </div>
+
+                  <div className="mt-4 flex gap-2">
+                    <a
+                      href={air.flightSearchUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 flex h-8 items-center justify-center gap-1 rounded-xl bg-brand-600 text-[11px] font-semibold text-white hover:bg-brand-700"
+                    >
+                      <span>Flight Status</span>
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                    <button
+                      onClick={() => {
+                        setDestInput(air.name);
+                        setTab('rides');
+                      }}
+                      className="flex-1 flex h-8 items-center justify-center gap-1 rounded-xl bg-black/5 text-[11px] font-semibold hover:bg-black/10 dark:bg-white/10"
+                    >
+                      <Car className="h-3 w-3" />
+                      <span>Cab to Airport</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
       )}
 
       {tab === 'metro' && (
