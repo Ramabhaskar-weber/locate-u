@@ -1,0 +1,5 @@
+﻿User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://locate-u.onrender.com/sitemap.xml

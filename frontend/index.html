@@ -1,18 +1,79 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="Locate U — a premium travel companion for India. World map, place search, and an explorer for all 28 states and 8 union territories." />
+
+    <!-- Primary Google SEO Meta Tags -->
+    <title>Locate U — Smart India Travel Companion, Live Maps, Language Translator &amp; Cab Hub</title>
+    <meta name="title" content="Locate U — Smart India Travel Companion, Live Maps, Language Translator & Cab Hub" />
+    <meta name="description" content="Locate U is an all-in-one India travel companion and interactive geospatial web app covering all 28 States and 8 Union Territories with OpenStreetMap, Telugu & Hindi voice translation, and Uber, Ola & Rapido ride deep-linking." />
+    <meta name="keywords" content="Locate U, LocateU, Locate U Travel Companion, Locate U India, Locate U Kakinada, Chidvilas Devarabotla, Ramabhaskar Locate U, India Travel App, OpenStreetMap India, Telugu Voice Translator, Smart Transport Hub" />
+    <meta name="author" content="Chidvilas N V S R B Devarabotla" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <link rel="canonical" href="https://locate-u.onrender.com/" />
+
+    <!-- Open Graph / WhatsApp / LinkedIn / Superset Rich Preview Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Locate U" />
+    <meta property="og:url" content="https://locate-u.onrender.com/" />
+    <meta property="og:title" content="Locate U — Smart India Travel Companion, Maps & Multi-Language Hub" />
+    <meta property="og:description" content="Explore 28 Indian States & 8 UTs with live OpenStreetMap GPS, verified Telugu & Hindi voice translation, and 1-tap Uber, Ola & Rapido ride coordinate transfer." />
+    <meta property="og:image" content="https://locate-u.onrender.com/icons/icon-512.png" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://locate-u.onrender.com/" />
+    <meta name="twitter:title" content="Locate U — Smart India Travel Companion" />
+    <meta name="twitter:description" content="Interactive world map, 28 States & 8 UTs explorer, Telugu/Hindi voice assistant, and smart cab deep-link dispatcher." />
+    <meta name="twitter:image" content="https://locate-u.onrender.com/icons/icon-512.png" />
+
     <meta name="theme-color" content="#f4f6fb" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <title>Locate U — Explore India</title>
+
+    <!-- Google Schema.org JSON-LD Structured Data for Rich Search Results -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "name": "Locate U",
+            "alternateName": ["LocateU", "Locate U Travel Companion", "Locate U India"],
+            "url": "https://locate-u.onrender.com/",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://locate-u.onrender.com/map?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          },
+          {
+            "@type": "WebApplication",
+            "name": "Locate U",
+            "url": "https://locate-u.onrender.com/",
+            "applicationCategory": "TravelApplication",
+            "operatingSystem": "All",
+            "author": {
+              "@type": "Person",
+              "name": "Chidvilas N V S R B Devarabotla",
+              "url": "https://github.com/Ramabhaskar-weber/locate-u"
+            },
+            "description": "Full-stack progressive web application for India travel discovery, OpenStreetMap navigation, multi-language voice translation, and Uber/Ola/Rapido coordinate transfer.",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "INR"
+            }
+          }
+        ]
+      }
+    </script>
+
     <script>
-      // Apply the saved theme before first paint to avoid a flash.
       try {
         var s = JSON.parse(localStorage.getItem('locate-u-settings') || '{}');
         var t = (s.state && s.state.theme) || 'system';
@@ -22,7 +83,10 @@
     </script>
   </head>
   <body>
-    <noscript>Locate U needs JavaScript to run the interactive map.</noscript>
+    <noscript>
+      <h1>Locate U — Smart India Travel Companion</h1>
+      <p>Explore 28 Indian States and 8 Union Territories with OpenStreetMap live GPS, verified Telugu and Hindi tourist voice translation, and smart transport deep links for Uber, Ola, and Rapido.</p>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
