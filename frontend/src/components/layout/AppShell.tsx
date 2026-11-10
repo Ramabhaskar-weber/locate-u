@@ -64,7 +64,7 @@ export function ThemeToggle({ compact }: { compact?: boolean }) {
       title={label}
       className={cn(
         'surface-hover inline-flex items-center gap-3 rounded-2xl text-sm font-medium',
-        compact ? 'h-10 w-10 justify-center' : 'h-10 w-full px-3',
+        compact ? 'h-9 w-9 justify-center' : 'h-10 w-full px-3',
       )}
     >
       <Icon className="h-[18px] w-[18px]" />
@@ -88,10 +88,11 @@ export function AppShell({ children }: { children: ReactNode }) {
     setPaletteOpen(true);
   });
 
-  const displayName = user?.display_name || profile.name || 'Guest Explorer';
+  const displayName = user?.display_name || profile.name || 'Traveler';
+  const avatarUrl = profile.avatarUrl || (user as any)?.avatar_url || null;
 
   return (
-    <div className="flex min-h-[100dvh] w-full max-w-full overflow-x-hidden">
+    <div className="flex min-h-[100dvh] w-full max-w-[100vw] overflow-x-hidden">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[3000] focus:rounded-xl focus:bg-brand-600 focus:px-4 focus:py-2 focus:text-white"
@@ -147,13 +148,21 @@ export function AppShell({ children }: { children: ReactNode }) {
               to="/settings"
               className="surface-hover flex h-11 items-center gap-3 rounded-2xl px-3 text-sm"
             >
-              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand-600 text-xs font-bold text-white">
-                {displayName.slice(0, 1).toUpperCase()}
-              </span>
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={displayName}
+                  className="h-7 w-7 shrink-0 rounded-full object-cover ring-2 ring-brand-500/40"
+                />
+              ) : (
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand-600 text-xs font-bold text-white">
+                  {displayName.slice(0, 1).toUpperCase()}
+                </span>
+              )}
               <div className="min-w-0 flex-1">
                 <div className="truncate font-semibold leading-tight">{displayName}</div>
                 <div className="truncate text-[10px] text-muted">
-                  {user ? 'Account Verified' : 'Sign in / Profile'}
+                  {user ? 'Account Verified' : 'Settings & Profile'}
                 </div>
               </div>
             </NavLink>
@@ -161,19 +170,18 @@ export function AppShell({ children }: { children: ReactNode }) {
         </nav>
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col max-w-full overflow-x-hidden">
         <OfflineBanner />
-        {/* Mobile Top Header Bar */}
         {!fullBleed && (
-          <header className="sticky top-0 z-30 flex items-center justify-between gap-2 px-3 pb-2 pt-[max(0.75rem,env(safe-area-inset-top))] lg:hidden">
-            <div className="glass flex h-12 flex-1 items-center justify-between rounded-full pl-3.5 pr-1.5 shadow-sm">
+          <header className="sticky top-0 z-30 flex items-center justify-between gap-2 px-2.5 pb-1.5 pt-[max(0.5rem,env(safe-area-inset-top))] lg:hidden">
+            <div className="glass flex h-12 flex-1 items-center justify-between rounded-full pl-3 pr-1.5 shadow-sm">
               <Logo compact />
               <div className="flex items-center gap-0.5">
                 <button
                   type="button"
                   onClick={() => setPaletteOpen(true)}
                   aria-label="Search"
-                  className="surface-hover grid h-10 w-10 place-items-center rounded-full"
+                  className="surface-hover grid h-9 w-9 place-items-center rounded-full"
                 >
                   <Search className="h-[18px] w-[18px]" />
                 </button>
@@ -181,16 +189,24 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <NavLink
                   to="/settings"
                   aria-label="Account & Settings"
-                  className="surface-hover grid h-10 w-10 place-items-center rounded-full"
+                  className="surface-hover grid h-9 w-9 place-items-center rounded-full"
                 >
-                  <UserIcon className="h-[18px] w-[18px]" />
+                  {avatarUrl ? (
+                    <img
+                      src={avatarUrl}
+                      alt={displayName}
+                      className="h-6 w-6 rounded-full object-cover ring-1 ring-brand-500/40"
+                    />
+                  ) : (
+                    <UserIcon className="h-[18px] w-[18px]" />
+                  )}
                 </NavLink>
                 <button
                   type="button"
                   onClick={() => setMobileMenuOpen((v) => !v)}
                   aria-label="Open navigation menu"
                   aria-expanded={mobileMenuOpen}
-                  className="surface-hover grid h-10 w-10 place-items-center rounded-full"
+                  className="surface-hover grid h-9 w-9 place-items-center rounded-full"
                 >
                   {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                 </button>
@@ -199,7 +215,6 @@ export function AppShell({ children }: { children: ReactNode }) {
           </header>
         )}
 
-        {/* Mobile Slide-Over Navigation Drawer */}
         {mobileMenuOpen && (
           <div
             className="fixed inset-0 z-[1200] bg-black/50 backdrop-blur-sm lg:hidden"
@@ -207,19 +222,33 @@ export function AppShell({ children }: { children: ReactNode }) {
           >
             <nav
               aria-label="Mobile menu"
-              className="glass-strong absolute right-3 top-[max(4.25rem,env(safe-area-inset-top))] w-72 max-w-[calc(100vw-1.5rem)] rounded-3xl p-4 shadow-2xl"
+              className="glass-strong absolute right-2.5 top-[max(3.75rem,env(safe-area-inset-top))] w-72 max-w-[calc(100vw-1.25rem)] rounded-3xl p-4 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="mb-3 flex items-center justify-between border-b hairline pb-2.5">
-                <div className="flex items-center gap-2.5">
-                  <span className="grid h-8 w-8 place-items-center rounded-full bg-brand-600 text-xs font-bold text-white">
-                    {displayName.slice(0, 1).toUpperCase()}
-                  </span>
+                <NavLink
+                  to="/settings"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2.5 min-w-0"
+                >
+                  {avatarUrl ? (
+                    <img
+                      src={avatarUrl}
+                      alt={displayName}
+                      className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-brand-500/40"
+                    />
+                  ) : (
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand-600 text-xs font-bold text-white">
+                      {displayName.slice(0, 1).toUpperCase()}
+                    </span>
+                  )}
                   <div className="min-w-0">
                     <div className="truncate text-xs font-bold">{displayName}</div>
-                    <div className="text-[10px] text-muted">Locate U Navigation</div>
+                    <div className="text-[10px] text-brand-600 dark:text-brand-300 font-semibold">
+                      Tap to edit photo & profile →
+                    </div>
                   </div>
-                </div>
+                </NavLink>
                 <button
                   type="button"
                   onClick={() => setMobileMenuOpen(false)}
@@ -264,39 +293,52 @@ export function AppShell({ children }: { children: ReactNode }) {
             'flex-1 w-full max-w-full overflow-x-hidden',
             fullBleed
               ? 'relative'
-              : 'px-3 pb-24 pt-2 sm:px-6 lg:px-8 lg:pb-10 lg:pt-6',
+              : 'px-2.5 pb-24 pt-1.5 sm:px-6 lg:px-8 lg:pb-10 lg:pt-6',
           )}
         >
           {children}
         </main>
       </div>
 
-      {/* Mobile Bottom Navigation Bar (5 Primary Tabs: Home, Map, Guide, Rides, Language) */}
+      {/* Mobile Bottom Navigation Bar */}
       <nav
         aria-label="Mobile bottom navigation"
-        className="fixed inset-x-0 bottom-0 z-[1100] px-2 pb-[max(0.5rem,var(--safe-bottom))] lg:hidden pointer-events-auto"
+        className="fixed inset-x-0 bottom-0 z-[1100] px-1.5 pb-[max(0.4rem,var(--safe-bottom))] lg:hidden pointer-events-auto"
       >
         <ul className="glass-strong mx-auto flex max-w-md items-center justify-around rounded-full p-1 shadow-lg border border-black/10 dark:border-white/10">
           {MOBILE_NAV.map((n) => (
-            <li key={n.to} className="flex-1 text-center">
+            <li key={n.to} className="flex-1 text-center min-w-0">
               <NavLink
                 to={n.to}
                 end={n.end}
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   cn(
-                    'flex h-11 flex-col items-center justify-center rounded-full text-[10px] font-semibold transition-colors px-1',
+                    'flex h-11 flex-col items-center justify-center rounded-full text-[10px] font-semibold transition-colors px-0.5',
                     isActive
                       ? 'bg-brand-600 text-white shadow-sm'
                       : 'text-muted hover:text-foreground',
                   )
                 }
               >
-                <n.icon className="h-[18px] w-[18px] shrink-0" />
-                <span className="truncate max-w-[60px] leading-tight mt-0.5">{n.label}</span>
+                <n.icon className="h-4 w-4 shrink-0" />
+                <span className="truncate max-w-[54px] leading-tight mt-0.5">{n.label}</span>
               </NavLink>
             </li>
           ))}
+          <li className="flex-1 text-center min-w-0">
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen((v) => !v)}
+              className={cn(
+                'flex h-11 w-full flex-col items-center justify-center rounded-full text-[10px] font-semibold transition-colors px-0.5',
+                mobileMenuOpen ? 'bg-brand-600 text-white shadow-sm' : 'text-muted hover:text-foreground',
+              )}
+            >
+              <Menu className="h-4 w-4 shrink-0" />
+              <span className="truncate max-w-[54px] leading-tight mt-0.5">More</span>
+            </button>
+          </li>
         </ul>
       </nav>
 

@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+﻿import clsx from 'clsx';
 import { AlertTriangle, Database, Inbox, Loader2, RefreshCw, WifiOff, X } from 'lucide-react';
 import {
   forwardRef,
@@ -16,24 +16,23 @@ import { timeAgo } from '@/lib/format';
 
 export const cn = clsx;
 
-// ---- Surfaces ------------------------------------------------------------------
 export function Glass({ className, strong, as: As = 'div', ...p }: HTMLAttributes<HTMLDivElement> & { strong?: boolean; as?: 'div' | 'section' | 'aside' | 'article' | 'header' | 'nav' }) {
   return <As className={cn(strong ? 'glass-strong' : 'glass', 'rounded-3xl', className)} {...p} />;
 }
 
 export function Card({ title, subtitle, action, children, className, icon }: { title?: ReactNode; subtitle?: ReactNode; action?: ReactNode; children?: ReactNode; className?: string; icon?: ReactNode }) {
   return (
-    <Glass as="section" className={cn('p-5 animate-fade-up', className)}>
+    <Glass as="section" className={cn('p-4 sm:p-5 w-full max-w-full overflow-hidden animate-fade-up', className)}>
       {(title || action) && (
-        <header className="mb-4 flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
+        <header className="mb-4 flex flex-col gap-2.5 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex items-start sm:items-center gap-3 min-w-0">
             {icon && <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-300">{icon}</div>}
-            <div className="min-w-0">
-              {title && <h2 className="text-[15px] font-semibold leading-tight">{title}</h2>}
-              {subtitle && <p className="mt-0.5 text-[13px] text-muted">{subtitle}</p>}
+            <div className="min-w-0 flex-1">
+              {title && <h2 className="text-[15px] font-semibold leading-tight break-words">{title}</h2>}
+              {subtitle && <p className="mt-0.5 text-[12px] sm:text-[13px] text-muted break-words">{subtitle}</p>}
             </div>
           </div>
-          {action}
+          {action && <div className="shrink-0 self-start sm:self-auto max-w-full overflow-x-auto">{action}</div>}
         </header>
       )}
       {children}
@@ -41,7 +40,6 @@ export function Card({ title, subtitle, action, children, className, icon }: { t
   );
 }
 
-// ---- Buttons ----------------------------------------------------------------------
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'glass';
 const variants: Record<Variant, string> = {
   primary: 'bg-brand-600 text-white hover:bg-brand-700 shadow-[0_6px_20px_-8px_rgb(31_95_224/.7)] disabled:bg-brand-600/50',
@@ -105,7 +103,6 @@ export const IconButton = forwardRef<HTMLButtonElement, ButtonProps & { label: s
   );
 });
 
-// ---- Form controls ------------------------------------------------------------------
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement> & { label?: string; error?: string; hint?: string; leading?: ReactNode }>(
   function Input({ label, error, hint, leading, className, id, ...p }, ref) {
     const auto = useId();
@@ -187,16 +184,21 @@ export function Switch({ checked, onChange, label, description }: { checked: boo
 
 export function Segmented<T extends string>({ value, onChange, options, label, size = 'md' }: { value: T; onChange: (v: T) => void; options: { value: T; label: ReactNode; icon?: ReactNode }[]; label: string; size?: 'sm' | 'md' }) {
   return (
-    <div role="radiogroup" aria-label={label} className="inline-flex rounded-full bg-black/[0.05] p-1 dark:bg-white/[0.07]">
+    <div
+      role="radiogroup"
+      aria-label={label}
+      className="flex flex-wrap sm:inline-flex max-w-full gap-1 rounded-3xl sm:rounded-full bg-black/[0.05] p-1 dark:bg-white/[0.07]"
+    >
       {options.map((o) => (
         <button
           key={o.value}
+          type="button"
           role="radio"
           aria-checked={value === o.value}
           onClick={() => onChange(o.value)}
           className={cn(
-            'inline-flex items-center gap-1.5 whitespace-nowrap rounded-full font-medium transition-all',
-            size === 'sm' ? 'h-7 px-3 text-[12px]' : 'h-8 px-3.5 text-[13px]',
+            'inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full font-medium transition-all',
+            size === 'sm' ? 'h-7 px-2.5 text-[11px] sm:text-[12px]' : 'h-8 px-3 text-[12px] sm:text-[13px]',
             value === o.value ? 'bg-white text-ink-900 shadow-sm dark:bg-white/[0.16] dark:text-white' : 'text-muted hover:text-[rgb(var(--fg))]',
           )}
         >
@@ -208,7 +210,6 @@ export function Segmented<T extends string>({ value, onChange, options, label, s
   );
 }
 
-// ---- Feedback ---------------------------------------------------------------------------
 export function Spinner({ label = 'Loading', className }: { label?: string; className?: string }) {
   return (
     <span role="status" className={cn('inline-flex items-center gap-2 text-sm text-muted', className)}>
@@ -282,7 +283,6 @@ export function Badge({ tone = 'neutral', children, className, title }: { tone?:
   return <span title={title} className={cn('chip', tones[tone], className)}>{children}</span>;
 }
 
-/** Distinguishes live, cached, local-dataset and unavailable data everywhere in the UI. */
 export function SourceBadge({ fromCache, cachedAt, live, label, local }: { fromCache?: boolean; cachedAt?: string; live?: string; label?: string; local?: boolean }) {
   if (fromCache)
     return (
@@ -313,7 +313,6 @@ export function Stat({ label, value, hint, icon }: { label: string; value: React
   );
 }
 
-// ---- Overlay ---------------------------------------------------------------------------------
 export function Modal({ open, onClose, title, children, footer, wide }: { open: boolean; onClose: () => void; title: string; children: ReactNode; footer?: ReactNode; wide?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {

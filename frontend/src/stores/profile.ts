@@ -7,6 +7,7 @@ export interface UserProfile {
   phone: string;
   homeCity: string;
   avatarColor: string;
+  avatarUrl?: string | null;
   foodPreference: 'Vegetarian' | 'Non-Veg' | 'Vegan' | 'Jain';
   travelStyle: 'Budget Backpacker' | 'Family Explorer' | 'Heritage & Culture' | 'Nature & Relaxation';
   language: 'Telugu' | 'English' | 'Hindi' | 'Tamil';
@@ -51,6 +52,7 @@ const DEFAULT_PROFILE: UserProfile = {
   phone: '',
   homeCity: 'Kakinada',
   avatarColor: '#2563eb',
+  avatarUrl: null,
   foodPreference: 'Vegetarian',
   travelStyle: 'Family Explorer',
   language: 'Telugu',
