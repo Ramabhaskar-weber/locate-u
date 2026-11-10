@@ -1,4 +1,4 @@
-"""Application settings, loaded from environment variables / .env files.
+﻿"""Application settings, loaded from environment variables / .env files.
 
 Nothing secret is hard-coded here; defaults are safe for local development
 only. ``APP_ENV=production`` enables stricter validation (see ``validate``).
@@ -25,7 +25,7 @@ class Settings(BaseSettings):
 
     APP_NAME: str = "Locate U"
     APP_ENV: Literal["development", "test", "production"] = "development"
-    APP_VERSION: str = "1.0.0"
+    APP_VERSION: str = "1.1.0"
     DEBUG: bool = False
 
     BACKEND_HOST: str = "127.0.0.1"
@@ -41,31 +41,45 @@ class Settings(BaseSettings):
     MAP_PROVIDER: str = "osm"
     OSM_TILE_URL: str = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
     NOMINATIM_BASE_URL: str = "https://nominatim.openstreetmap.org"
-    NOMINATIM_EMAIL: str = ""  # recommended by the Nominatim usage policy
-    NOMINATIM_MIN_INTERVAL_SECONDS: float = 1.0  # policy: max 1 request / second
+    NOMINATIM_EMAIL: str = ""
+    NOMINATIM_MIN_INTERVAL_SECONDS: float = 1.0
     GEOCODE_CACHE_DAYS: int = 30
-    HTTP_USER_AGENT: str = "LocateU/1.0 (self-hosted travel companion)"
+    HTTP_USER_AGENT: str = "LocateU/1.1 (self-hosted travel companion)"
     HTTP_TIMEOUT_SECONDS: float = 12.0
 
     INDIA_DATA_DIR: str = str(PROJECT_DIR / "data" / "processed" / "india")
 
-    # Free, key-less preview providers (each can be switched off)
     FEATURE_WEATHER: bool = True
     OPEN_METEO_BASE_URL: str = "https://api.open-meteo.com/v1"
     FEATURE_WIKIPEDIA: bool = True
     WIKIPEDIA_BASE_URL: str = "https://en.wikipedia.org"
     FEATURE_NEARBY: bool = True
     OVERPASS_URL: str = "https://overpass-api.de/api/interpreter"
+    FEATURE_TRANSLATE: bool = True
+    MYMEMORY_BASE_URL: str = "https://api.mymemory.translated.net"
 
-    # Run migrations + import the India dataset on startup when the DB is empty.
+    # SMS / OTP Provider Configuration
+    SMS_PROVIDER: Literal["console", "twilio", "fast2sms"] = "console"
+    TWILIO_ACCOUNT_SID: str = ""
+    TWILIO_AUTH_TOKEN: str = ""
+    TWILIO_VERIFY_SERVICE_SID: str = ""
+    TWILIO_FROM_NUMBER: str = ""
+    FAST2SMS_API_KEY: str = ""
+    OTP_EXPIRY_MINUTES: int = 10
+    OTP_COOLDOWN_SECONDS: int = 30
+    OTP_MAX_ATTEMPTS: int = 5
+
+    # Email / SMTP Configuration for real Gmail delivery
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_FROM_NAME: str = "Locate U"
+
     AUTO_SETUP: bool = True
-    # Optional path to a built frontend to serve from the backend (defaults to ../frontend/dist).
     FRONTEND_DIST: str = ""
-
-    # API rate limit for this backend (per client IP)
     RATE_LIMIT_PER_MINUTE: int = 120
 
-    # Future paid integrations: intentionally unused until explicitly approved.
     GEMINI_API_KEY: str = ""
     WEATHER_API_KEY: str = ""
     GOOGLE_MAPS_API_KEY: str = ""
