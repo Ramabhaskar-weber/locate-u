@@ -552,7 +552,7 @@ export function AccountPanel() {
                 <h3 className="text-lg font-bold truncate">{displayName}</h3>
                 <Badge tone={user || extProfile.phoneVerified || extProfile.emailVerified ? 'green' : 'brand'}>
                   <ShieldCheck className="h-3 w-3" />
-                  {user ? 'Cloud Account Verified' : 'Verified Profile'}
+                  {user || extProfile.phoneVerified || extProfile.emailVerified ? 'Verified Profile' : 'Guest (Not Signed In)'}
                 </Badge>
               </div>
               <div className="mt-1.5 space-y-1 text-xs text-muted">
@@ -1163,4 +1163,5 @@ export function AccountPanel() {
     </div>
   );
 }
+
 
