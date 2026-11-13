@@ -1,0 +1,12 @@
+﻿[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.locateu.app",
+      "sha256_cert_fingerprints": [
+        "E3:8F:1A:E0:AB:EF:BB:39:2D:52:F2:30:14:45:66:5A:6D:82:11:F7:25:25:9F:D6:23:93:4C:BF:94:2D:71:AB"
+      ]
+    }
+  }
+]
