@@ -1,4 +1,4 @@
-"""FastAPI application factory for the Locate U backend."""
+﻿"""FastAPI application factory for the Locate U backend."""
 from __future__ import annotations
 
 import logging
@@ -82,6 +82,21 @@ def create_app() -> FastAPI:
     for r in (system.router, geocode.router, india.router, account.auth, account.saved, extras.router):
         app.include_router(r, prefix=API_PREFIX)
 
+    @app.get("/.well-known/assetlinks.json", include_in_schema=False)
+    async def assetlinks():
+        return JSONResponse([
+            {
+                "relation": ["delegate_permission/common.handle_all_urls"],
+                "target": {
+                    "namespace": "android_app",
+                    "package_name": "com.locateu.app",
+                    "sha256_cert_fingerprints": [
+                        "E3:8F:1A:E0:AB:EF:BB:39:2D:52:F2:30:14:45:66:5A:6D:82:11:F7:25:25:9F:D6:23:93:4C:BF:94:2D:71:AB"
+                    ],
+                },
+            }
+        ])
+
     _mount_frontend(app)
     return app
 
@@ -104,3 +119,4 @@ def _mount_frontend(app: FastAPI) -> None:
 
 
 app = create_app()
+
