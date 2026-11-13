@@ -69,7 +69,7 @@ const INDIAN_STATES = [
   'Other',
 ];
 
-const EXT_PROFILE_KEY = 'locate_u:extended_profile:v3';
+const EXT_PROFILE_KEY = 'locate_u:extended_profile:v4';
 
 interface ExtendedProfileData {
   avatarUrl: string | null;
@@ -135,7 +135,7 @@ export function AccountPanel() {
       gender: '',
       country: 'India',
       state: 'Andhra Pradesh',
-      homeCity: profile.homeCity || 'Kakinada',
+      homeCity: profile.homeCity || 'Not set',
       foodPreference: profile.foodPreference || 'Vegetarian',
       phoneVerified: false,
       emailVerified: false,
@@ -967,7 +967,7 @@ export function AccountPanel() {
                   type="text"
                   value={nameInput}
                   onChange={(e) => setNameInput(e.target.value)}
-                  placeholder="Chidvilas"
+                  placeholder="Your full name"
                   className="h-10 w-full rounded-2xl border border-black/10 bg-white/85 px-3.5 text-sm outline-none dark:border-white/10 dark:bg-white/[0.06]"
                   required
                 />
@@ -1163,5 +1163,6 @@ export function AccountPanel() {
     </div>
   );
 }
+
 
 

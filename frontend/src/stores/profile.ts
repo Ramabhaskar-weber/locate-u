@@ -45,6 +45,7 @@ interface ProfileState {
   expenses: WalletExpense[];
   currentTrip: GroupTrip | null;
   updateProfile: (data: Partial<UserProfile>) => void;
+  resetProfile: () => void;
   addExpense: (expense: Omit<WalletExpense, 'id' | 'date'>) => void;
   removeExpense: (id: string) => void;
   clearExpenses: () => void;
@@ -61,12 +62,12 @@ const DEFAULT_PROFILE: UserProfile = {
   name: 'Guest Traveler',
   email: '',
   phone: '',
-  homeCity: 'Kakinada',
+  homeCity: '',
   avatarColor: '#2563eb',
   avatarUrl: null,
   foodPreference: 'Vegetarian',
   travelStyle: 'Family Explorer',
-  language: 'Telugu',
+  language: 'English',
   emergencyContact: '112',
 };
 
@@ -74,13 +75,12 @@ export const useProfile = create<ProfileState>()(
   persist(
     (set, get) => ({
       profile: DEFAULT_PROFILE,
-      expenses: [
-        { id: 'e1', title: 'Subbayya Gari Meals', amount: 480, category: 'Food', paidBy: 'Self', date: 'Today' },
-        { id: 'e2', title: 'Rapido Auto to Beach', amount: 120, category: 'Transport', paidBy: 'Self', date: 'Today' },
-      ],
+      expenses: [],
       currentTrip: null,
       updateProfile: (data) =>
         set((state) => ({ profile: { ...state.profile, ...data } })),
+      resetProfile: () =>
+        set({ profile: DEFAULT_PROFILE, expenses: [], currentTrip: null }),
       addExpense: (exp) =>
         set((state) => ({
           expenses: [
@@ -102,7 +102,7 @@ export const useProfile = create<ProfileState>()(
         const trip: GroupTrip = {
           roomCode: code,
           tripName: name.trim() || 'Family Trip',
-          destination: destination.trim() || 'Tirupati',
+          destination: destination.trim() || 'Destination',
           members: baseMembers,
           memberDetails: baseMembers.map((m, idx) => ({
             name: m,
@@ -184,10 +184,8 @@ export const useProfile = create<ProfileState>()(
       leaveTrip: () => set({ currentTrip: null }),
     }),
     {
-      name: 'locate-u-user-profile-v1',
+      name: 'locate-u-user-profile-v3',
       storage: createJSONStorage(() => localStorage),
     },
   ),
 );
-
-
