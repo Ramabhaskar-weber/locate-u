@@ -1,22 +1,55 @@
-"""Operational commands.
-
-    python -m app.cli migrate        # alembic upgrade head
-    python -m app.cli import-india   # load data/processed/india into the database
-    python -m app.cli setup          # migrate + import if empty
-    python -m app.cli purge-cache    # delete expired provider cache rows
-    python -m app.cli coverage       # print dataset coverage
-"""
+﻿""" Operational commands."""
 from __future__ import annotations
 
 import argparse
 import json
 import sys
 
-from sqlalchemy import func, inspect, select
+from sqlalchemy import func, inspect, select, text
 
 from app.core.config import BACKEND_DIR, get_settings
-from app.db.models import State
+from app.db.models import Base, State
 from app.db.session import SessionLocal, get_engine
+
+
+def _ensure_user_columns_and_tables() -> None:
+    engine = get_engine()
+    Base.metadata.create_all(engine)
+    insp = inspect(engine)
+    if "users" not in insp.get_table_names():
+        return
+    cols = {c["name"] for c in insp.get_columns("users")}
+    alter_statements = []
+    if "phone_number" not in cols:
+        alter_statements.append("ALTER TABLE users ADD COLUMN phone_number VARCHAR(24)")
+    if "country_code" not in cols:
+        alter_statements.append("ALTER TABLE users ADD COLUMN country_code VARCHAR(8) DEFAULT '+91'")
+    if "phone_verified" not in cols:
+        alter_statements.append("ALTER TABLE users ADD COLUMN phone_verified BOOLEAN DEFAULT 0 NOT NULL")
+    if "avatar_url" not in cols:
+        alter_statements.append("ALTER TABLE users ADD COLUMN avatar_url TEXT")
+    if "date_of_birth" not in cols:
+        alter_statements.append("ALTER TABLE users ADD COLUMN date_of_birth VARCHAR(20)")
+    if "gender" not in cols:
+        alter_statements.append("ALTER TABLE users ADD COLUMN gender VARCHAR(32)")
+    if "country" not in cols:
+        alter_statements.append("ALTER TABLE users ADD COLUMN country VARCHAR(80) DEFAULT 'India'")
+    if "state" not in cols:
+        alter_statements.append("ALTER TABLE users ADD COLUMN state VARCHAR(80)")
+    if "home_city" not in cols:
+        alter_statements.append("ALTER TABLE users ADD COLUMN home_city VARCHAR(120)")
+    if "food_preference" not in cols:
+        alter_statements.append("ALTER TABLE users ADD COLUMN food_preference VARCHAR(40) DEFAULT 'Vegetarian'")
+    if "updated_at" not in cols:
+        alter_statements.append("ALTER TABLE users ADD COLUMN updated_at TIMESTAMP")
+
+    if alter_statements:
+        with engine.begin() as conn:
+            for stmt in alter_statements:
+                try:
+                    conn.execute(text(stmt))
+                except Exception:
+                    pass
 
 
 def migrate() -> None:
@@ -26,7 +59,11 @@ def migrate() -> None:
     cfg = Config(str(BACKEND_DIR / "alembic.ini"))
     cfg.set_main_option("script_location", str(BACKEND_DIR / "alembic"))
     cfg.set_main_option("sqlalchemy.url", get_settings().DATABASE_URL.replace("%", "%%"))
-    command.upgrade(cfg, "head")
+    try:
+        command.upgrade(cfg, "head")
+    except Exception:
+        pass
+    _ensure_user_columns_and_tables()
 
 
 def import_india(only: list[str] | None = None) -> dict:

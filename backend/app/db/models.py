@@ -1,10 +1,4 @@
-"""SQLAlchemy ORM models.
-
-Coordinates are stored as plain latitude/longitude floats so the schema works
-on SQLite (tests) and PostgreSQL. On PostgreSQL the Alembic migration also
-adds a PostGIS ``geography(Point, 4326)`` column (``places.geom``) with a GiST
-index, which the nearest-place query uses when available.
-"""
+﻿"""SQLAlchemy ORM models."""
 from __future__ import annotations
 
 import uuid
@@ -37,7 +31,7 @@ class State(Base):
     __tablename__ = "states"
     code: Mapped[str] = mapped_column(String(4), primary_key=True)
     name: Mapped[str] = mapped_column(String(120), unique=True)
-    type: Mapped[str] = mapped_column(String(20))  # state | union_territory
+    type: Mapped[str] = mapped_column(String(20))
     capital: Mapped[str | None] = mapped_column(String(120))
     lat: Mapped[float | None] = mapped_column(Float)
     lon: Mapped[float | None] = mapped_column(Float)
@@ -95,10 +89,8 @@ class DatasetImport(Base):
 
 
 class ProviderCache(Base):
-    """Cache for third-party provider responses (Nominatim, Open-Meteo, …)."""
-
     __tablename__ = "provider_cache"
-    key: Mapped[str] = mapped_column(String(64), primary_key=True)  # sha256 of provider+params
+    key: Mapped[str] = mapped_column(String(64), primary_key=True)
     provider: Mapped[str] = mapped_column(String(40), index=True)
     payload: Mapped[dict | list] = mapped_column(JSON)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
@@ -109,12 +101,35 @@ class ProviderCache(Base):
 class User(Base):
     __tablename__ = "users"
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    email: Mapped[str] = mapped_column(String(254), unique=True, index=True)
+    email: Mapped[str | None] = mapped_column(String(254), unique=True, index=True, nullable=True)
+    phone_number: Mapped[str | None] = mapped_column(String(24), unique=True, index=True, nullable=True)
+    country_code: Mapped[str | None] = mapped_column(String(8), default="+91", nullable=True)
+    phone_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     display_name: Mapped[str] = mapped_column(String(80))
     password_hash: Mapped[str] = mapped_column(String(255))
+    avatar_url: Mapped[str | None] = mapped_column(Text, nullable=True)
+    date_of_birth: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    gender: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    country: Mapped[str | None] = mapped_column(String(80), default="India", nullable=True)
+    state: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    home_city: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    food_preference: Mapped[str | None] = mapped_column(String(40), default="Vegetarian", nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
 
     saved: Mapped[list["SavedLocation"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+
+
+class OtpVerification(Base):
+    __tablename__ = "otp_verifications"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    target: Mapped[str] = mapped_column(String(254), index=True)
+    purpose: Mapped[str] = mapped_column(String(32), default="login")
+    otp_hash: Mapped[str] = mapped_column(String(255))
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
 
 
 class SavedLocation(Base):
@@ -129,7 +144,7 @@ class SavedLocation(Base):
     tags: Mapped[list] = mapped_column(JSON, default=list)
     collection: Mapped[str | None] = mapped_column(String(80))
     color: Mapped[str | None] = mapped_column(String(16))
-    source: Mapped[str] = mapped_column(String(40), default="map")  # map | search | india | gps
+    source: Mapped[str] = mapped_column(String(40), default="map")
     source_ref: Mapped[str | None] = mapped_column(String(120))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
