@@ -173,7 +173,7 @@ export default function HomePage() {
             <div className="flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1 text-xs font-semibold backdrop-blur-md">
                 <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
-                {greeting()}, {activeUserName}
+                {greeting()}, {activeUserName}</span><a href="https://github.com/Ramabhaskar-weber/locate-u/releases/download/v1.0.0/Locate.U.apk" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/25 border border-emerald-400/40 px-3.5 py-1 text-xs font-bold text-emerald-200 transition hover:bg-emerald-500/35">📲 Download Android App (APK)</a><span className="hidden">
               </span>
 
               {mapUser ? (
@@ -401,3 +401,4 @@ export default function HomePage() {
     </div>
   );
 }
+
