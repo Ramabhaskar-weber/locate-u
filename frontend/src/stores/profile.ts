@@ -58,8 +58,8 @@ interface ProfileState {
 }
 
 const DEFAULT_PROFILE: UserProfile = {
-  name: 'Chidvilas',
-  email: 'ramachidvilas@gmail.com',
+  name: 'Guest Traveler',
+  email: '',
   phone: '',
   homeCity: 'Kakinada',
   avatarColor: '#2563eb',
@@ -189,3 +189,4 @@ export const useProfile = create<ProfileState>()(
     },
   ),
 );
+

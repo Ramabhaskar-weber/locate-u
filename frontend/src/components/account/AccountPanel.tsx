@@ -69,7 +69,7 @@ const INDIAN_STATES = [
   'Other',
 ];
 
-const EXT_PROFILE_KEY = 'locate_u:extended_profile:v2';
+const EXT_PROFILE_KEY = 'locate_u:extended_profile:v3';
 
 interface ExtendedProfileData {
   avatarUrl: string | null;
@@ -1163,3 +1163,4 @@ export function AccountPanel() {
     </div>
   );
 }
+
