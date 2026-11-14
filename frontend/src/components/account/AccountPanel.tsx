@@ -159,7 +159,7 @@ export function AccountPanel() {
   const [phoneInput, setPhoneInput] = useState(extProfile.phone || '');
   const [emailInput, setEmailInput] = useState(profile.email || '');
   const [passwordInput, setPasswordInput] = useState('');
-  const [nameInput, setNameInput] = useState(profile.name || '');
+  const [nameInput, setNameInput] = useState(profile.name && profile.name !== 'Guest Traveler' ? profile.name : '');
   const [stateInput, setStateInput] = useState('Andhra Pradesh');
 
   const [otpSent, setOtpSent] = useState(false);
@@ -337,8 +337,7 @@ export function AccountPanel() {
       return;
     }
 
-    const displayLabel =
-      nameInput.trim() || profile.name || (cleanEmail ? cleanEmail.split('@')[0] : 'Traveler');
+    const displayLabel = nameInput.trim() || (profile.name && profile.name !== 'Guest Traveler' ? profile.name : '') || (cleanEmail ? cleanEmail.split('@')[0] : 'Traveler');
 
     setBusy(true);
     try {
@@ -447,6 +446,8 @@ export function AccountPanel() {
         avatarUrl: editAvatar,
       });
 
+      if (user) { useAuth.setState({ user: { ...user, display_name: editName.trim(), email: editEmail.trim() || user.email } }); }
+      setNameInput(editName.trim());
       setIsEditing(false);
       toast('Account profile & photo saved!', { tone: 'success' });
     } finally {
@@ -470,7 +471,7 @@ export function AccountPanel() {
     setIsEditing(false);
   };
 
-  const displayName = user?.display_name || profile.name || 'Traveler';
+  const displayName = (profile.name && profile.name !== 'Guest Traveler' ? profile.name : '') || user?.display_name || 'Guest Traveler';
   const displayEmail =
     user?.email && !user.email.endsWith('@phone.locateu.in')
       ? user.email
@@ -685,8 +686,7 @@ export function AccountPanel() {
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
                   className="h-10 w-full rounded-2xl border border-black/10 bg-white/80 px-3.5 text-sm outline-none focus:border-brand-500 dark:border-white/10 dark:bg-white/[0.06]"
-                  required
-                />
+                  />
               </div>
               <div>
                 <label className="mb-1 block text-xs font-semibold text-muted">Gmail / Email Address</label>
@@ -959,7 +959,7 @@ export function AccountPanel() {
         )}
 
         <form onSubmit={handleAuthSubmit} className="space-y-3.5">
-          {authTab === 'register' && (
+          {authTab !== 'recovery' && (
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1 block text-xs font-semibold text-muted">Full Name *</label>
@@ -969,8 +969,7 @@ export function AccountPanel() {
                   onChange={(e) => setNameInput(e.target.value)}
                   placeholder="Your full name"
                   className="h-10 w-full rounded-2xl border border-black/10 bg-white/85 px-3.5 text-sm outline-none dark:border-white/10 dark:bg-white/[0.06]"
-                  required
-                />
+                  />
               </div>
               <div>
                 <label className="mb-1 block text-xs font-semibold text-muted">Home State</label>
@@ -1163,6 +1162,7 @@ export function AccountPanel() {
     </div>
   );
 }
+
 
 
 
