@@ -4,6 +4,8 @@
   Home,
   Info,
   LifeBuoy,
+  CloudSun,
+  LifeBuoy,
   Map as MapIcon,
   Moon,
   Search,
@@ -35,11 +37,13 @@ const NAV = [
   { to: '/map', label: 'World Map', short: 'Map', icon: MapIcon },
   { to: '/transport', label: 'Transport Hub', short: 'Rides', icon: Car },
   { to: '/language', label: 'Language Assistant', short: 'Language', icon: Languages },
+  { to: '/discover', label: 'Weather & Discovery', short: 'Discover', icon: CloudSun },
   { to: '/explore', label: 'Travel Guide & AI', short: 'Guide', icon: Sparkles },
   { to: '/planner', label: 'Wallet & Trips', short: 'Wallet', icon: Wallet },
   { to: '/india', label: 'India Explorer', short: 'India', icon: Compass },
   { to: '/saved', label: 'Saved Places', short: 'Saved', icon: Star },
   { to: '/settings', label: 'Settings & Profile', short: 'Profile', icon: Settings },
+  { to: '/support', label: 'Help & Support', short: 'Support', icon: LifeBuoy },
   { to: '/support', label: 'Help & Support', short: 'Support', icon: LifeBuoy },
   { to: '/about', label: 'Data & About', short: 'About', icon: Info },
 ];
@@ -350,4 +354,5 @@ export function AppShell({ children }: { children: ReactNode }) {
     </div>
   );
 }
+
 
