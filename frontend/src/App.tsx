@@ -20,6 +20,7 @@ const GroupPlannerPage = lazy(() => import('./pages/GroupPlannerPage'));
 const SavedPage = lazy(() => import('./pages/SavedPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
+const SupportPage = lazy(() => import('./pages/SupportPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 export const queryClient = new QueryClient({
@@ -72,6 +73,7 @@ export default function App() {
                 <Route path="/saved" element={<SavedPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/about" element={<AboutPage />} />
+                <Route path="/support" element={<SupportPage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Suspense>
@@ -81,3 +83,4 @@ export default function App() {
     </QueryClientProvider>
   );
 }
+

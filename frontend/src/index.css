@@ -1,4 +1,4 @@
-@import 'leaflet/dist/leaflet.css';
+﻿@import 'leaflet/dist/leaflet.css';
 
 @tailwind base;
 @tailwind components;
@@ -15,7 +15,7 @@
     --fg: 17 20 28;
     --muted: 84 92 110;
     --glass: 255 255 255;
-    --glass-alpha: 0.72;
+    --glass-alpha: 0.64;
     --glass-strong-alpha: 0.86;
     --glass-border: 255 255 255;
     --glass-border-alpha: 0.65;
@@ -30,10 +30,10 @@
     --fg: 236 239 245;
     --muted: 160 169 188;
     --glass: 22 27 38;
-    --glass-alpha: 0.7;
+    --glass-alpha: 0.58;
     --glass-strong-alpha: 0.88;
     --glass-border: 255 255 255;
-    --glass-border-alpha: 0.09;
+    --glass-border-alpha: 0.14;
     --hairline: 255 255 255;
     --hairline-alpha: 0.08;
     color-scheme: dark;
@@ -54,8 +54,9 @@
   .glass {
     background: rgb(var(--glass) / var(--glass-alpha));
     border: 1px solid rgb(var(--glass-border) / var(--glass-border-alpha));
-    -webkit-backdrop-filter: saturate(180%) blur(22px);
-    backdrop-filter: saturate(180%) blur(22px);
+    -webkit-backdrop-filter: saturate(190%) blur(28px);
+    backdrop-filter: saturate(190%) blur(28px);
+    box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.16), 0 12px 36px -12px rgb(0 0 0 / 0.35);
     @apply shadow-glass dark:shadow-glass-dark;
   }
   .glass-strong {
@@ -122,3 +123,4 @@
   animation: lu-ping 2s cubic-bezier(0,0,.2,1) infinite;
 }
 @keyframes lu-ping { 75%, 100% { transform: scale(2); opacity: 0; } }
+
