@@ -5,7 +5,6 @@
   Info,
   LifeBuoy,
   CloudSun,
-  LifeBuoy,
   Map as MapIcon,
   Moon,
   Search,
@@ -43,7 +42,6 @@ const NAV = [
   { to: '/india', label: 'India Explorer', short: 'India', icon: Compass },
   { to: '/saved', label: 'Saved Places', short: 'Saved', icon: Star },
   { to: '/settings', label: 'Settings & Profile', short: 'Profile', icon: Settings },
-  { to: '/support', label: 'Help & Support', short: 'Support', icon: LifeBuoy },
   { to: '/support', label: 'Help & Support', short: 'Support', icon: LifeBuoy },
   { to: '/about', label: 'Data & About', short: 'About', icon: Info },
 ];

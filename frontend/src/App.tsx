@@ -21,6 +21,8 @@ const SavedPage = lazy(() => import('./pages/SavedPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const SupportPage = lazy(() => import('./pages/SupportPage'));
+const SmartDiscoveryPage = lazy(() => import('./pages/SmartDiscoveryPage'));
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 export const queryClient = new QueryClient({
@@ -67,13 +69,15 @@ export default function App() {
                 <Route path="/india" element={<IndiaPage />} />
                 <Route path="/india/:code" element={<StatePage />} />
                 <Route path="/transport" element={<TransportPage />} />
+                <Route path="/discover" element={<SmartDiscoveryPage />} />
                 <Route path="/explore" element={<ExploreHubPage />} />
                 <Route path="/language" element={<LanguagePage />} />
                 <Route path="/planner" element={<GroupPlannerPage />} />
                 <Route path="/saved" element={<SavedPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
-                <Route path="/about" element={<AboutPage />} />
                 <Route path="/support" element={<SupportPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/privacy" element={<PrivacyPage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Suspense>
@@ -83,4 +87,3 @@ export default function App() {
     </QueryClientProvider>
   );
 }
-
