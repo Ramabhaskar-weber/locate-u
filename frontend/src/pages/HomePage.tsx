@@ -17,7 +17,7 @@ import {
   CheckCircle2,
   Sun,
 } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Badge, Button, Card } from '@/components/ui';
 import { useGeolocation } from '@/hooks';
@@ -129,6 +129,39 @@ export default function HomePage() {
   const openOnMap = useOpenOnMap();
   const geo = useGeolocation();
   const mapUser = useMap((s) => s.user);
+  const setMapUser = useMap((s) => s.setUser);
+  const [liveAddress, setLiveAddress] = useState<string>('');
+  const [editingHome, setEditingHome] = useState(false);
+  const [homeInput, setHomeInput] = useState(() => localStorage.getItem('locate_u:exact_home_address') || '');
+
+  useEffect(() => {
+    if (!mapUser) return;
+    let cancelled = false;
+    api.reverse(mapUser.lat, mapUser.lon, { zoom: 18 })
+      .then((res) => {
+        if (!cancelled && res?.data?.display_name) {
+          setLiveAddress(res.data.display_name);
+        }
+      })
+      .catch(() => undefined);
+    return () => { cancelled = true; };
+  }, [mapUser?.lat, mapUser?.lon]);
+
+  const handleSaveExactHome = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const clean = homeInput.trim();
+    if (!clean) return;
+    localStorage.setItem('locate_u:exact_home_address', clean);
+    setLiveAddress(clean);
+    setEditingHome(false);
+    try {
+      const res = await api.search(clean);
+      const first = res?.data?.[0];
+      if (first) {
+        setMapUser({ lat: first.lat, lon: first.lon, accuracy: 10, at: Date.now() });
+      }
+    } catch { /* keep typed address */ }
+  };
   const saved = useSaved((s) => s.items);
   const { profile } = useProfile();
   const authUser = useAuth((s) => s.user);
@@ -401,4 +434,5 @@ export default function HomePage() {
     </div>
   );
 }
+
 
