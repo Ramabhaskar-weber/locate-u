@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+﻿import { useCallback, useEffect, useRef, useState } from 'react';
 import { useMap } from '@/stores/map';
 
 export function useOnline(): boolean {
@@ -96,7 +96,7 @@ export function useGeolocation() {
           setError(msg);
           resolve(null);
         };
-        const o = { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 };
+        const o = { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 };
         if (opts.watch) {
           if (watchId.current != null) navigator.geolocation.clearWatch(watchId.current);
           watchId.current = navigator.geolocation.watchPosition(ok, fail, o);
@@ -186,3 +186,4 @@ export async function copyText(text: string): Promise<boolean> {
     }
   }
 }
+

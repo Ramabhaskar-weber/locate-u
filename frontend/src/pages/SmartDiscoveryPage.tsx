@@ -1,12 +1,12 @@
 ﻿import {
-  Accessibility, AlertTriangle, Bike, Bookmark, Camera, Car, CloudSun, Compass,
-  Download, Flag, Footprints, Gem, Hotel, MapPin, Navigation, PhoneCall,
-  Share2, ShieldAlert, Sparkles, Star, StopCircle, Users, Utensils, Calendar, WifiOff,
+  Accessibility, AlertTriangle, Bike, Bookmark, Bus, Camera, Car, CheckCircle2, CloudSun,
+  Copy, Download, ExternalLink, Flag, Footprints, Gem, Hotel, MapPin, Navigation,
+  PhoneCall, Share2, ShieldAlert, Sparkles, Star, StopCircle, Users, Utensils, Calendar, WifiOff,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Badge, Button, Card, Glass } from '@/components/ui';
-import { useGeolocation } from '@/hooks';
+import { copyText, useGeolocation } from '@/hooks';
 import { useOpenOnMap } from '@/hooks/useOpenOnMap';
 import { formatDistance, haversineKm } from '@/lib/geo';
 import { useMap } from '@/stores/map';
@@ -25,6 +25,12 @@ interface DestinationGuide {
 interface PlaceReview {
   id: string; placeId: string; author: string; text: string;
   cleanliness: number; accessibility: number; photo?: string | null; date: string;
+}
+
+interface OsrmSummary {
+  driving?: { km: number; mins: number };
+  cycling?: { km: number; mins: number };
+  walking?: { km: number; mins: number };
 }
 
 const DESTINATIONS: DestinationGuide[] = [
@@ -122,6 +128,7 @@ const DESTINATIONS: DestinationGuide[] = [
 
 const REVIEWS_KEY = 'locate_u:place_reviews:v1';
 const OFFLINE_KEY = 'locate_u:offline_packs:v1';
+const EMERGENCY_KEY = 'locate_u:emergency_contact:v1';
 
 interface LiveWeather { temp: number; wind: number; humidity: number; code: number; }
 
@@ -131,6 +138,13 @@ function weatherLabel(code: number): { label: string; alert?: string } {
   if (code >= 45) return { label: 'Fog / Mist', alert: 'Low visibility fog advisory for morning highway drives.' };
   if (code >= 1 && code <= 3) return { label: 'Partly Cloudy' };
   return { label: 'Clear Sky' };
+}
+
+function fmtMins(mins: number) {
+  if (mins < 60) return `${Math.max(1, Math.round(mins))} mins`;
+  const h = Math.floor(mins / 60);
+  const m = Math.round(mins % 60);
+  return `${h}h ${m}m`;
 }
 
 export default function SmartDiscoveryPage() {
@@ -148,12 +162,12 @@ export default function SmartDiscoveryPage() {
   const [weatherLoading, setWeatherLoading] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoGuess, setPhotoGuess] = useState<string>('');
+  const [osrm, setOsrm] = useState<OsrmSummary>({});
 
-  // Live Trip Sharing state
   const [liveSharingActive, setLiveSharingActive] = useState(false);
   const [etaMinutes, setEtaMinutes] = useState('25');
+  const [emergencyPhone, setEmergencyPhone] = useState(() => localStorage.getItem(EMERGENCY_KEY) || '');
 
-  // Tourist Reviews & Ratings state
   const [reviews, setReviews] = useState<PlaceReview[]>(() => {
     try { return JSON.parse(localStorage.getItem(REVIEWS_KEY) || '[]'); } catch { return []; }
   });
@@ -162,7 +176,6 @@ export default function SmartDiscoveryPage() {
   const [accessRating, setAccessRating] = useState(4);
   const [revPhoto, setRevPhoto] = useState<string | null>(null);
 
-  // Offline Travel Mode state
   const [offlinePacks, setOfflinePacks] = useState<DestinationGuide[]>(() => {
     try { return JSON.parse(localStorage.getItem(OFFLINE_KEY) || '[]'); } catch { return []; }
   });
@@ -176,6 +189,9 @@ export default function SmartDiscoveryPage() {
     () => filteredDestinations.find((d) => d.id === selectedId) || filteredDestinations[0] || DESTINATIONS[0],
     [filteredDestinations, selectedId],
   );
+
+  const origin = mapUser || { lat: 16.9891, lon: 82.2475, accuracy: undefined as number | undefined };
+  const straightKm = useMemo(() => haversineKm(origin, { lat: active.lat, lon: active.lon }), [origin.lat, origin.lon, active.lat, active.lon]);
 
   useEffect(() => {
     let cancelled = false;
@@ -196,9 +212,47 @@ export default function SmartDiscoveryPage() {
     return () => { cancelled = true; };
   }, [active.lat, active.lon]);
 
-  const origin = mapUser || { lat: 16.9891, lon: 82.2475 };
-  const distKm = useMemo(() => haversineKm(origin, { lat: active.lat, lon: active.lon }), [origin, active]);
+  useEffect(() => {
+    let cancelled = false;
+    const coords = `${origin.lon},${origin.lat};${active.lon},${active.lat}`;
+    Promise.allSettled([
+      fetch(`https://router.project-osrm.org/route/v1/driving/${coords}?overview=false`).then((r) => r.json()),
+      fetch(`https://router.project-osrm.org/route/v1/cycling/${coords}?overview=false`).then((r) => r.json()),
+      fetch(`https://router.project-osrm.org/route/v1/foot/${coords}?overview=false`).then((r) => r.json()),
+    ]).then(([drv, cyc, wlk]) => {
+      if (cancelled) return;
+      const next: OsrmSummary = {};
+      if (drv.status === 'fulfilled' && drv.value?.routes?.[0]) next.driving = { km: drv.value.routes[0].distance / 1000, mins: drv.value.routes[0].duration / 60 };
+      if (cyc.status === 'fulfilled' && cyc.value?.routes?.[0]) next.cycling = { km: cyc.value.routes[0].distance / 1000, mins: cyc.value.routes[0].duration / 60 };
+      if (wlk.status === 'fulfilled' && wlk.value?.routes?.[0]) next.walking = { km: wlk.value.routes[0].distance / 1000, mins: wlk.value.routes[0].duration / 60 };
+      setOsrm(next);
+    });
+    return () => { cancelled = true; };
+  }, [origin.lat, origin.lon, active.lat, active.lon]);
+
   const wInfo = weather ? weatherLabel(weather.code) : { label: 'Checking...' };
+  const roadKm = osrm.driving?.km ?? straightKm * 1.25;
+  const driveMins = osrm.driving?.mins ?? (roadKm / 42) * 60;
+  const cycleKm = osrm.cycling?.km ?? roadKm;
+  const cycleMins = osrm.cycling?.mins ?? (cycleKm / 15) * 60;
+  const walkKm = osrm.walking?.km ?? roadKm;
+  const walkMins = osrm.walking?.mins ?? (walkKm / 4.5) * 60;
+
+  const startLiveGps = async () => {
+    const pos = await geo.locate({ watch: true });
+    if (pos) {
+      setLiveSharingActive(true);
+      toast(`Live GPS locked (±${Math.round(pos.coords.accuracy)}m)`, { tone: 'success' });
+    } else {
+      toast('Enable Location / GPS on your phone and allow browser permission', { tone: 'error' });
+    }
+  };
+
+  const stopLiveGps = () => {
+    geo.stop();
+    setLiveSharingActive(false);
+    toast('Live location sharing stopped');
+  };
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -223,20 +277,13 @@ export default function SmartDiscoveryPage() {
     e.preventDefault();
     if (!revText.trim()) return;
     const next: PlaceReview = {
-      id: 'rev_' + Date.now(),
-      placeId: active.id,
-      author: 'Traveler',
-      text: revText.trim(),
-      cleanliness: cleanRating,
-      accessibility: accessRating,
-      photo: revPhoto,
-      date: new Date().toLocaleDateString('en-IN'),
+      id: 'rev_' + Date.now(), placeId: active.id, author: 'Traveler', text: revText.trim(),
+      cleanliness: cleanRating, accessibility: accessRating, photo: revPhoto, date: new Date().toLocaleDateString('en-IN'),
     };
     const updated = [next, ...reviews];
     setReviews(updated);
     localStorage.setItem(REVIEWS_KEY, JSON.stringify(updated));
-    setRevText('');
-    setRevPhoto(null);
+    setRevText(''); setRevPhoto(null);
     toast('Review & ratings saved!', { tone: 'success' });
   };
 
@@ -255,18 +302,19 @@ export default function SmartDiscoveryPage() {
     const blob = new Blob([JSON.stringify(dest, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = `${dest.id}-offline-pack.json`;
-    a.click();
+    a.href = url; a.download = `${dest.id}-offline-pack.json`; a.click();
     URL.revokeObjectURL(url);
     toast('Offline destination pack downloaded!', { tone: 'success' });
   };
 
   const activeReviews = reviews.filter((r) => r.placeId === active.id);
   const shareUrl = `https://www.google.com/maps?q=${origin.lat},${origin.lon}`;
-  const etaWhatsApp = `https://wa.me/?text=${encodeURIComponent(
-    `📍 Locate U Live Trip Update:\nHeading to: ${active.name} (${active.address})\nEstimated ETA: ~${etaMinutes} mins\n${liveSharingActive ? `Live Location: ${shareUrl}` : ''}`,
-  )}`;
+  const cleanFamilyDigits = emergencyPhone.replace(/\D/g, '');
+  const shareMessage = `Locate U Live Trip Update:\nHeading to: ${active.name} (${active.address})\nEstimated ETA: ~${etaMinutes} mins\n${liveSharingActive ? `My Live GPS Pin: ${shareUrl}` : `Destination Pin: https://www.google.com/maps?q=${active.lat},${active.lon}`}`;
+  const etaWhatsApp = cleanFamilyDigits.length >= 10
+    ? `https://wa.me/${cleanFamilyDigits.startsWith('91') ? cleanFamilyDigits : '91' + cleanFamilyDigits}?text=${encodeURIComponent(shareMessage)}`
+    : `https://wa.me/?text=${encodeURIComponent(shareMessage)}`;
+  const gmapsRouteUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin.lat},${origin.lon}&destination=${active.lat},${active.lon}`;
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 pb-12 w-full overflow-x-hidden">
@@ -274,11 +322,11 @@ export default function SmartDiscoveryPage() {
         <div>
           <div className="inline-flex items-center gap-2 rounded-full bg-cyan-500/10 border border-cyan-400/30 px-3 py-1 text-xs font-semibold text-cyan-400 mb-2">
             <Sparkles className="h-3.5 w-3.5" />
-            Smart Travel Suite · Live Weather, Sharing, Reviews &amp; Offline Mode
+            Smart Travel Suite · Live GPS, Routes, Sharing &amp; Offline Mode
           </div>
           <h1 className="font-display text-3xl font-bold sm:text-4xl">Smart Discovery &amp; Planner</h1>
           <p className="mt-1 text-sm text-muted">
-            Weather alerts, tourist seasons, hidden gems, hotels, food, photo nav, live trip sharing, reviews &amp; offline mode.
+            Weather alerts, tourist seasons, hidden gems, hotels, food, live route comparison, trip sharing &amp; offline packs.
           </p>
         </div>
 
@@ -304,7 +352,6 @@ export default function SmartDiscoveryPage() {
         ))}
       </div>
 
-      {/* Weather, Seasons & Alerts */}
       <div className="grid gap-4 md:grid-cols-3">
         <Card icon={<CloudSun className="h-5 w-5" />} title="Live Destination Weather" subtitle={active.name}>
           {weatherLoading ? <p className="text-xs text-muted">Fetching live Open-Meteo weather...</p> : weather ? (
@@ -337,60 +384,115 @@ export default function SmartDiscoveryPage() {
         </Card>
       </div>
 
-      {/* Route Comparison */}
       <Card
         icon={<Navigation className="h-5 w-5" />}
-        title="Route Comparison (Walking vs Cycling vs Driving)"
-        subtitle={`To ${active.name} (${formatDistance(distKm)})`}
-        action={<div className="flex gap-2"><Button size="sm" variant="secondary" onClick={() => geo.locate()}>Use My GPS</Button><Button size="sm" variant="primary" onClick={() => navigate(`/transport?dest=${encodeURIComponent(active.name)}&lat=${active.lat}&lon=${active.lon}`)}>Book Ride</Button></div>}
+        title="Route Comparison (6 Travel Modes)"
+        subtitle={`From ${mapUser ? `your live GPS (±${Math.round(mapUser.accuracy || 20)}m)` : 'default Kakinada origin'} to ${active.name}`}
+        action={
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="secondary" onClick={startLiveGps}>Refresh Exact GPS</Button>
+            <a href={gmapsRouteUrl} target="_blank" rel="noopener noreferrer">
+              <Button size="sm" variant="glass" icon={<ExternalLink className="h-3.5 w-3.5" />}>Google Maps</Button>
+            </a>
+            <Button size="sm" variant="primary" onClick={() => navigate(`/transport?dest=${encodeURIComponent(active.name)}&lat=${active.lat}&lon=${active.lon}`)}>Book Ride</Button>
+          </div>
+        }
       >
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <Glass className="p-3.5 border hairline">
-            <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 mb-1"><Footprints className="h-4 w-4" /> Walking (~4.5 km/h)</div>
-            <div className="text-lg font-bold">{distKm < 1 ? `${Math.max(2, Math.round((distKm / 4.5) * 60))} mins` : `${(distKm / 4.5).toFixed(1)} hrs`}</div>
-            <p className="text-[11px] text-muted mt-0.5">{formatDistance(distKm)} · Zero cost</p>
+            <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 mb-1"><Footprints className="h-4 w-4" /> Walking</div>
+            <div className="text-lg font-bold">{fmtMins(walkMins)}</div>
+            <p className="text-[11px] text-muted mt-0.5">{formatDistance(walkKm)} · ~{Math.round(walkKm * 1300).toLocaleString()} steps · Rs 0</p>
           </Glass>
           <Glass className="p-3.5 border hairline">
-            <div className="flex items-center gap-2 text-xs font-bold text-cyan-400 mb-1"><Bike className="h-4 w-4" /> Cycling (~15 km/h)</div>
-            <div className="text-lg font-bold">{distKm < 15 ? `${Math.max(3, Math.round((distKm / 15) * 60))} mins` : `${(distKm / 15).toFixed(1)} hrs`}</div>
-            <p className="text-[11px] text-muted mt-0.5">{formatDistance(distKm)} · Eco-friendly</p>
+            <div className="flex items-center gap-2 text-xs font-bold text-cyan-400 mb-1"><Bike className="h-4 w-4" /> Cycling</div>
+            <div className="text-lg font-bold">{fmtMins(cycleMins)}</div>
+            <p className="text-[11px] text-muted mt-0.5">{formatDistance(cycleKm)} · Saves ~{(roadKm * 0.12).toFixed(1)} kg CO2</p>
           </Glass>
           <Glass className="p-3.5 border hairline">
-            <div className="flex items-center gap-2 text-xs font-bold text-amber-400 mb-1"><Car className="h-4 w-4" /> Driving / Cab (~42 km/h)</div>
-            <div className="text-lg font-bold">{distKm < 42 ? `${Math.max(4, Math.round((distKm / 42) * 60))} mins` : `${(distKm / 42).toFixed(1)} hrs`}</div>
-            <p className="text-[11px] text-muted mt-0.5">Est. cab Rs {Math.max(45, Math.round(distKm * 15))} · Auto Rs {Math.max(30, Math.round(distKm * 11))}</p>
+            <div className="flex items-center gap-2 text-xs font-bold text-yellow-400 mb-1"><Bike className="h-4 w-4" /> Bike Taxi / Two-Wheeler</div>
+            <div className="text-lg font-bold">{fmtMins(driveMins * 0.85)}</div>
+            <p className="text-[11px] text-muted mt-0.5">{formatDistance(roadKm)} · Est. Rs {Math.max(25, Math.round(roadKm * 7))} (Fastest in traffic)</p>
+          </Glass>
+          <Glass className="p-3.5 border hairline">
+            <div className="flex items-center gap-2 text-xs font-bold text-lime-400 mb-1"><Car className="h-4 w-4" /> Auto-Rickshaw</div>
+            <div className="text-lg font-bold">{fmtMins(driveMins * 1.05)}</div>
+            <p className="text-[11px] text-muted mt-0.5">{formatDistance(roadKm)} · Est. Rs {Math.max(35, Math.round(roadKm * 12))}</p>
+          </Glass>
+          <Glass className="p-3.5 border hairline">
+            <div className="flex items-center gap-2 text-xs font-bold text-amber-400 mb-1"><Car className="h-4 w-4" /> Cab / Car</div>
+            <div className="text-lg font-bold">{fmtMins(driveMins)}</div>
+            <p className="text-[11px] text-muted mt-0.5">{formatDistance(roadKm)} · Est. Rs {Math.max(60, Math.round(roadKm * 16))}</p>
+          </Glass>
+          <Glass className="p-3.5 border hairline">
+            <div className="flex items-center gap-2 text-xs font-bold text-violet-400 mb-1"><Bus className="h-4 w-4" /> Public Bus / Transit</div>
+            <div className="text-lg font-bold">{fmtMins(driveMins * 1.35)}</div>
+            <p className="text-[11px] text-muted mt-0.5">{formatDistance(roadKm)} · Est. Rs {Math.max(15, Math.round(roadKm * 2.5))}</p>
           </Glass>
         </div>
       </Card>
 
-      {/* Live Trip Sharing + Offline Travel Mode */}
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card icon={<Share2 className="h-5 w-5" />} title="Live Trip Sharing &amp; Safety" subtitle="Share itinerary, live GPS &amp; ETA with family (stop anytime)">
+        <Card icon={<Share2 className="h-5 w-5" />} title="Live Trip Sharing &amp; Safety" subtitle="Real-time GPS tracking, emergency contacts &amp; family ETA">
           <div className="space-y-3">
             <div className="flex flex-wrap items-center gap-2">
               {!liveSharingActive ? (
-                <Button size="sm" variant="primary" icon={<MapPin className="h-4 w-4" />} onClick={() => { geo.locate(); setLiveSharingActive(true); toast('Live GPS sharing enabled with your permission', { tone: 'success' }); }}>
-                  Start Live Location Sharing
+                <Button size="sm" variant="primary" icon={<MapPin className="h-4 w-4" />} onClick={startLiveGps}>
+                  Start Exact Live GPS
                 </Button>
               ) : (
-                <Button size="sm" variant="danger" icon={<StopCircle className="h-4 w-4" />} onClick={() => { setLiveSharingActive(false); toast('Live location sharing stopped'); }}>
+                <Button size="sm" variant="danger" icon={<StopCircle className="h-4 w-4" />} onClick={stopLiveGps}>
                   Stop Sharing Anytime
                 </Button>
               )}
-              <a href="tel:112">
-                <Button size="sm" variant="secondary" icon={<PhoneCall className="h-4 w-4 text-red-400" />}>SOS 112</Button>
-              </a>
+              <Button size="sm" variant="glass" icon={<Copy className="h-3.5 w-3.5" />} onClick={async () => { await copyText(shareUrl); toast('Exact GPS pin link copied!', { tone: 'success' }); }}>
+                Copy Live Pin
+              </Button>
+              <Button size="sm" variant="secondary" icon={<CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />} onClick={() => toast('Safe arrival message ready to send!', { tone: 'success' })}>
+                I Reached Safely
+              </Button>
             </div>
-            <div className="flex items-center gap-2 text-xs">
-              <span className="text-muted">ETA (mins):</span>
-              <input value={etaMinutes} onChange={(e) => setEtaMinutes(e.target.value)} className="w-20 rounded-xl border hairline bg-white/10 px-2.5 py-1 text-xs font-bold outline-none" />
-              <a href={etaWhatsApp} target="_blank" rel="noopener noreferrer" className="ml-auto">
-                <Button size="sm" variant="glass" icon={<Share2 className="h-3.5 w-3.5" />}>Send ETA &amp; Itinerary on WhatsApp</Button>
-              </a>
-            </div>
-            {liveSharingActive && (
-              <p className="text-[11px] text-emerald-300">● Live coordinates active ({origin.lat.toFixed(4)}, {origin.lon.toFixed(4)}). Tap Stop Sharing anytime.</p>
+
+            {mapUser ? (
+              <div className="rounded-2xl border hairline bg-emerald-500/10 p-2.5 text-[11px] text-emerald-200">
+                <div><strong>GPS Lock:</strong> {origin.lat.toFixed(6)}, {origin.lon.toFixed(6)} · Accuracy: <strong>±{Math.round(mapUser.accuracy || 0)}m</strong></div>
+                {(mapUser.accuracy || 0) > 500 && (
+                  <div className="text-amber-300 mt-1">Note: Accuracy over 500m usually means Wi-Fi/laptop IP location. Open Locate U on your phone with GPS ON for ~10m precision.</div>
+                )}
+              </div>
+            ) : (
+              <div className="rounded-2xl border hairline bg-white/[0.03] p-2.5 text-[11px] text-muted">
+                Tap <strong>Start Exact Live GPS</strong> to lock your device&apos;s real-time coordinates.
+              </div>
             )}
+
+            <div className="grid gap-2 sm:grid-cols-2 text-xs">
+              <div>
+                <label className="text-[11px] text-muted block mb-1">Family / Emergency Number:</label>
+                <input
+                  value={emergencyPhone}
+                  onChange={(e) => { setEmergencyPhone(e.target.value); localStorage.setItem(EMERGENCY_KEY, e.target.value); }}
+                  placeholder="e.g. 9493652840"
+                  className="w-full rounded-xl border hairline bg-white/10 px-2.5 py-1.5 text-xs outline-none"
+                />
+              </div>
+              <div>
+                <label className="text-[11px] text-muted block mb-1">Estimated ETA (minutes):</label>
+                <input value={etaMinutes} onChange={(e) => setEtaMinutes(e.target.value)} className="w-full rounded-xl border hairline bg-white/10 px-2.5 py-1.5 text-xs outline-none" />
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2 pt-1">
+              <a href={etaWhatsApp} target="_blank" rel="noopener noreferrer">
+                <Button size="sm" variant="primary" icon={<Share2 className="h-3.5 w-3.5" />}>Send ETA &amp; Live Pin on WhatsApp</Button>
+              </a>
+              {cleanFamilyDigits.length >= 10 && (
+                <a href={`tel:${cleanFamilyDigits}`}>
+                  <Button size="sm" variant="secondary" icon={<PhoneCall className="h-3.5 w-3.5 text-emerald-400" />}>Call Family</Button>
+                </a>
+              )}
+              <a href="tel:112"><Button size="sm" variant="danger" icon={<ShieldAlert className="h-3.5 w-3.5" />}>SOS 112</Button></a>
+            </div>
           </div>
         </Card>
 
@@ -407,7 +509,7 @@ export default function SmartDiscoveryPage() {
             Saved destinations, addresses &amp; India dataset boundaries work offline. (OSM map tiles follow standard HTTP cache policy.)
           </p>
           {offlinePacks.length > 0 && (
-            <div className="space-y-1.5 max-h-28 overflow-y-auto">
+            <div className="space-y-1.5 max-h-36 overflow-y-auto">
               {offlinePacks.map((p) => (
                 <div key={p.id} className="rounded-xl border hairline bg-white/[0.03] px-3 py-1.5 text-xs flex justify-between">
                   <span className="font-semibold">{p.name}</span>
@@ -419,7 +521,6 @@ export default function SmartDiscoveryPage() {
         </Card>
       </div>
 
-      {/* Hotel Comparison + Food Discovery */}
       <div className="grid gap-4 lg:grid-cols-2">
         <Card icon={<Hotel className="h-5 w-5" />} title="Hotel Comparison" subtitle={`Stays near ${active.name}`}>
           <div className="space-y-2.5">
@@ -447,7 +548,6 @@ export default function SmartDiscoveryPage() {
         </Card>
       </div>
 
-      {/* Tourist Reviews & Ratings + Photo Navigation */}
       <div className="grid gap-4 lg:grid-cols-2">
         <Card
           icon={<Star className="h-5 w-5" />}
