@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { Badge, Button, Card, Glass } from '@/components/ui';
 import { copyText, useGeolocation } from '@/hooks';
 import { useOpenOnMap } from '@/hooks/useOpenOnMap';
+import { api } from '@/lib/api';
 import { formatDistance, haversineKm } from '@/lib/geo';
 import { useMap } from '@/stores/map';
 import { useSaved } from '@/stores/saved';
@@ -165,6 +166,7 @@ export default function SmartDiscoveryPage() {
   const [osrm, setOsrm] = useState<OsrmSummary>({});
 
   const [liveSharingActive, setLiveSharingActive] = useState(false);
+  const [liveAddress, setLiveAddress] = useState<string>('');
   const [etaMinutes, setEtaMinutes] = useState('25');
   const [emergencyPhone, setEmergencyPhone] = useState(() => localStorage.getItem(EMERGENCY_KEY) || '');
 
@@ -191,6 +193,13 @@ export default function SmartDiscoveryPage() {
   );
 
   const origin = mapUser || { lat: 16.9891, lon: 82.2475, accuracy: undefined as number | undefined };
+
+  useEffect(() => {
+    if (!mapUser) return;
+    let cancelled = false;
+    api.reverse(mapUser.lat, mapUser.lon, { zoom: 18 }).then((res) => { if (!cancelled && res?.data?.display_name) setLiveAddress(res.data.display_name); }).catch(() => undefined);
+    return () => { cancelled = true; };
+  }, [mapUser?.lat, mapUser?.lon]);
   const straightKm = useMemo(() => haversineKm(origin, { lat: active.lat, lon: active.lon }), [origin.lat, origin.lon, active.lat, active.lon]);
 
   useEffect(() => {
@@ -310,7 +319,7 @@ export default function SmartDiscoveryPage() {
   const activeReviews = reviews.filter((r) => r.placeId === active.id);
   const shareUrl = `https://www.google.com/maps?q=${origin.lat},${origin.lon}`;
   const cleanFamilyDigits = emergencyPhone.replace(/\D/g, '');
-  const shareMessage = `Locate U Live Trip Update:\nHeading to: ${active.name} (${active.address})\nEstimated ETA: ~${etaMinutes} mins\n${liveSharingActive ? `My Live GPS Pin: ${shareUrl}` : `Destination Pin: https://www.google.com/maps?q=${active.lat},${active.lon}`}`;
+  const shareMessage = `Locate U Live Location Update:\nMy Exact Location: ${liveAddress || `${origin.lat.toFixed(6)}, ${origin.lon.toFixed(6)}`}\nMy Live GPS Pin: ${shareUrl}\nHeading to: ${active.name} (ETA ~${etaMinutes} mins)`;
   const etaWhatsApp = cleanFamilyDigits.length >= 10
     ? `https://wa.me/${cleanFamilyDigits.startsWith('91') ? cleanFamilyDigits : '91' + cleanFamilyDigits}?text=${encodeURIComponent(shareMessage)}`
     : `https://wa.me/?text=${encodeURIComponent(shareMessage)}`;
@@ -454,10 +463,15 @@ export default function SmartDiscoveryPage() {
             </div>
 
             {mapUser ? (
-              <div className="rounded-2xl border hairline bg-emerald-500/10 p-2.5 text-[11px] text-emerald-200">
-                <div><strong>GPS Lock:</strong> {origin.lat.toFixed(6)}, {origin.lon.toFixed(6)} · Accuracy: <strong>±{Math.round(mapUser.accuracy || 0)}m</strong></div>
+              <div className="rounded-2xl border hairline bg-emerald-500/10 p-3 text-[11px] text-emerald-200 space-y-1">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-bold text-emerald-300">{liveSharingActive ? '● Live GPS Sharing Active' : '● Live GPS Locked'}</span>
+                  <span className="opacity-80">Accuracy: ±{Math.round(mapUser.accuracy || 0)}m</span>
+                </div>
+                <div className="text-white font-medium break-words">{liveAddress || 'Resolving exact street address...'}</div>
+                <div className="font-mono text-[10px] opacity-80">{origin.lat.toFixed(6)}, {origin.lon.toFixed(6)}</div>
                 {(mapUser.accuracy || 0) > 500 && (
-                  <div className="text-amber-300 mt-1">Note: Accuracy over 500m usually means Wi-Fi/laptop IP location. Open Locate U on your phone with GPS ON for ~10m precision.</div>
+                  <div className="text-amber-300 pt-0.5">Note: Accuracy over 500m usually means Wi-Fi/laptop IP location. Open Locate U on your phone with GPS ON for ~10m precision.</div>
                 )}
               </div>
             ) : (
@@ -621,3 +635,4 @@ export default function SmartDiscoveryPage() {
     </div>
   );
 }
+
